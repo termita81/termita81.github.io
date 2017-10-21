@@ -1,0 +1,122 @@
+body {
+    background: url('../image/background.png') no-repeat center center fixed;
+    background-size: cover;
+}
+
+main.container {
+    margin-top: 80px;
+}
+
+a {
+    cursor: pointer;
+}
+
+/* */
+/* Sign In Page CSS */
+
+.sign-up {
+    margin: 0 auto;
+    text-align: center;
+}
+
+.sign-up > h3, h5 {
+    color: white;
+}
+
+.sign-up > h3 {
+    font-weight: bold;
+}
+.sign-up > h3 > span {
+    font-size: 40px;
+}
+
+.sign-up > form > *,
+input,
+select,
+option {
+    margin-top: 10px;
+    border-radius: 10px;
+    width: 200px;
+    height: 50px;
+    padding: 10px;
+    box-shadow: 3px 3px black;
+}
+
+.sign-up > form > button {
+    background-color: #a4aabb;
+    color: white;
+    font-weight: bold;
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.sign-up > a {
+    color: white;
+    text-decoration: none;
+}
+
+/* */
+/* Search Page CSS */
+
+.search-box {
+    height: 100px;
+    margin-bottom: 10px;
+}
+
+.search-box > * {
+    margin-top: 5px;
+}
+
+.search-box > select {
+  width: 174px;
+  /* height: 26px; */
+  text-align: center;
+}
+
+.search-result > ul {
+  padding-left: 0px;
+}
+
+.search-result > ul > div {
+    width: 220px;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.search-result > ul > div > * {
+    margin-left: 10px;
+    margin-top: 4px;
+}
+
+.search-list > div {
+    background-color: #eff0f4;
+    margin: 10px;
+    padding: 5px;
+}
+
+.search-result > ul > div > button {
+    margin-top: 0px;
+}
+
+/* */
+/* Transaction Page CSS */
+
+.transaction {
+    color: white;
+    width: 100%;
+}
+
+.transaction > th {
+    text-align: center;
+}
+
+.transaction > th, td {
+    padding-right: 25px;
+}
+
+.transaction > div {
+    background-color: #eff0f4;
+}
+
+/* */
