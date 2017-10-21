@@ -1,6 +1,7 @@
 body {
     background: url('../image/background.png') no-repeat center center fixed;
-    background-size: cover;
+		background-size: cover;
+		font-family: 'Avenir', sans-serif;
 }
 
 main.container {
@@ -59,7 +60,7 @@ option {
 /* Search Page CSS */
 
 .search-box {
-    height: 100px;
+    /* height: 100px; */
     margin-bottom: 10px;
 }
 
