@@ -1,5 +1,5 @@
 class ImmediateCalculator {
-  current = '';
+  current = '0';
   expression = '';
   operator = '';
 
@@ -8,6 +8,7 @@ class ImmediateCalculator {
     this.doClearAll();
   }
 
+  
   doKey(key) {
     if ('1234567890.'.includes(key)) {
       this.doDigit(key);
@@ -79,18 +80,20 @@ class ImmediateCalculator {
     this.current = '0';
   }
 
+  operations = {
+    '+': (a, b) => a + b,
+    '-': (a, b) => a - b,
+    '/': (a, b) => a / b,
+    '*': (a, b) => a * b,
+  };
+
   compute() {
     // try and parse current and expression
     let prev = parseFloat(this.expression);
     let crt = parseFloat(this.current);
     // return if we miss any operand or the operator
     if (isNaN(prev) || isNaN(crt) || !this.operator) return;
-    const operations = {
-      '+': (a, b) => a + b,
-      '-': (a, b) => a - b,
-      '/': (a, b) => a / b,
-      '*': (a, b) => a * b,
-    };
+
     // precision
     const precision = this.precision 
       ? Math.pow(10, this.precision) 
@@ -99,8 +102,8 @@ class ImmediateCalculator {
       prev = parseInt((prev * precision).toFixed());
       crt = parseInt((crt * precision).toFixed());
     }
-    // make computation
-    let result = operations[this.operator](prev, crt);
+    // perform computation
+    let result = this.operations[this.operator](prev, crt);
     // precision
     if (precision) {
       if (this.operator !== '/') {
