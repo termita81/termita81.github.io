@@ -1,15 +1,23 @@
 {
 	"version": "https://jsonfeed.org/version/1.1",
-	"title": "Eleventy Base Blog v8",
+	"title": "Razvan Popa&#39;s website",
 	"language": "en",
 	"home_page_url": "https://example.com/",
 	"feed_url": "https://example.com/feed/feed.json",
-	"description": "I am writing about my experiences as a naval navel-gazer.",
+	"description": "I am writing about stuff.",
 	"author": {
-		"name": "Your Name Here",
-		"url": "https://example.com/about-me/"
+		"name": "Razvan Popa",
+		"url": "https://www.razvanpopa.name/about/"
 	},
 	"items": [
+		{
+			"id": "https://example.com/blog/fifthpost/",
+			"url": "https://example.com/blog/fifthpost/",
+			"title": "This is a fifth post (draft)",
+			"content_html": "<p>This is a draft post</p>\n",
+			"date_published": "2023-01-23T00:00:00Z"
+		}
+		,
 		{
 			"id": "https://example.com/blog/fourthpost/",
 			"url": "https://example.com/blog/fourthpost/",
