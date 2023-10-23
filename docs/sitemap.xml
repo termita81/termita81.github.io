@@ -22,11 +22,6 @@
 	</url>
 	
 	<url>
-		<loc>https://example.com/blog/fifthpost/</loc>
-		<lastmod>2023-01-23</lastmod>
-	</url>
-	
-	<url>
 		<loc>https://example.com/about/</loc>
 		<lastmod>2023-08-06</lastmod>
 	</url>
@@ -47,12 +42,17 @@
 	</url>
 	
 	<url>
+		<loc>https://example.com/tags/number-2/</loc>
+		<lastmod>2023-08-06</lastmod>
+	</url>
+	
+	<url>
 		<loc>https://example.com/tags/another-tag/</loc>
 		<lastmod>2023-08-06</lastmod>
 	</url>
 	
 	<url>
-		<loc>https://example.com/tags/number-2/</loc>
+		<loc>https://example.com/tags/subiaco/</loc>
 		<lastmod>2023-08-06</lastmod>
 	</url>
 	
@@ -64,5 +64,10 @@
 	<url>
 		<loc>https://example.com/tags/posts-with-two-tags/</loc>
 		<lastmod>2023-08-06</lastmod>
+	</url>
+	
+	<url>
+		<loc>https://example.com/blog/swimmingAroundSubiaco/</loc>
+		<lastmod>2023-10-23</lastmod>
 	</url>
 </urlset>

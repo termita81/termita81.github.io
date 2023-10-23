@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Swimming spots around Subiaco</title>
+		<meta name="description" content="A few swimming places around Subiaco, Western Australia">
+		<link rel="alternate" href="/feed/feed.xml" type="application/atom+xml" title="Razvan Popa&#39;s website">
+		<link rel="alternate" href="/feed/feed.json" type="application/json" title="Razvan Popa&#39;s website">
+
+		<meta name="generator" content="Eleventy v2.0.1">
+
+		<!-- or link CSS <link rel="stylesheet" href="/css/style.css"> -->
+		
+		<style>/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
+	display: block;
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
+}
+* { box-sizing: border-box; }
+/* Defaults */
+:root {
+	--font-family: -apple-system, system-ui, sans-serif;
+	--font-family-monospace: Consolas, Menlo, Monaco, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter, DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Courier New, Courier, monospace;
+}
+
+/* Theme colors */
+:root {
+	--color-gray-20: #e0e0e0;
+	--color-gray-50: #C0C0C0;
+	--color-gray-90: #333;
+
+	--background-color: #fff;
+
+	--text-color: var(--color-gray-90);
+	--text-color-link: #082840;
+	--text-color-link-active: #5f2b48;
+	--text-color-link-visited: #17050F;
+
+	--syntax-tab-size: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-gray-20: #e0e0e0;
+		--color-gray-50: #C0C0C0;
+		--color-gray-90: #dad8d8;
+
+		/* --text-color is assigned to --color-gray-_ above */
+		--text-color-link: #1493fb;
+		--text-color-link-active: #6969f7;
+		--text-color-link-visited: #a6a6f8;
+
+		--background-color: #15202b;
+	}
+}
+
+
+/* Global stylesheet */
+* {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0 auto;
+	font-family: var(--font-family);
+	color: var(--text-color);
+	background-color: var(--background-color);
+}
+html {
+	overflow-y: scroll;
+}
+body {
+	max-width: 80vw; /* 40em; */
+}
+
+/* https://www.a11yproject.com/posts/how-to-hide-content/ */
+.visually-hidden {
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+p:last-child {
+	margin-bottom: 0;
+}
+p {
+	line-height: 1.5;
+}
+
+li {
+	line-height: 1.5;
+}
+
+a[href] {
+	color: var(--text-color-link);
+}
+a[href]:visited {
+	color: var(--text-color-link-visited);
+}
+a[href]:hover,
+a[href]:active {
+	color: var(--text-color-link-active);
+}
+
+main {
+	padding: 1rem;
+}
+main :first-child {
+	margin-top: 0;
+}
+
+header {
+	border-bottom: 1px dashed var(--color-gray-20);
+}
+header:after {
+	content: "";
+	display: table;
+	clear: both;
+}
+
+.links-nextprev {
+	list-style: none;
+	border-top: 1px dashed var(--color-gray-20);
+	padding: 1em 0;
+}
+
+table {
+	margin: 1em 0;
+}
+table td,
+table th {
+	padding-right: 1em;
+}
+
+pre,
+code {
+	font-family: var(--font-family-monospace);
+}
+pre:not([class*="language-"]) {
+	margin: .5em 0;
+	line-height: 1.375; /* 22px /16 */
+	-moz-tab-size: var(--syntax-tab-size);
+	-o-tab-size: var(--syntax-tab-size);
+	tab-size: var(--syntax-tab-size);
+	-webkit-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+	direction: ltr;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+}
+code {
+	word-break: break-all;
+}
+
+/* Header */
+header {
+	display: flex;
+	gap: 1em .5em;
+	flex-wrap: wrap;
+	align-items: center;
+	padding: 1em;
+}
+.home-link {
+	font-size: 1em; /* 16px /16 */
+	font-weight: 700;
+	margin-right: 2em;
+}
+.home-link:link:not(:hover) {
+	text-decoration: none;
+}
+
+/* Nav */
+.nav {
+	display: flex;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+.nav-item {
+	display: inline-block;
+	margin-right: 1em;
+}
+.nav-item a[href]:not(:hover) {
+	text-decoration: none;
+}
+.nav a[href][aria-current="page"] {
+	text-decoration: underline;
+}
+
+/* Posts list */
+.postlist {
+	list-style: none;
+	padding: 0;
+	padding-left: 1.5rem;
+}
+.postlist-item {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	counter-increment: start-from -1;
+	margin-bottom: 1em;
+}
+.postlist-item:before {
+	display: inline-block;
+	pointer-events: none;
+	content: "" counter(start-from, decimal-leading-zero) ". ";
+	line-height: 100%;
+	text-align: right;
+	margin-left: -1.5rem;
+}
+.postlist-date,
+.postlist-item:before {
+	font-size: 0.8125em; /* 13px /16 */
+	color: var(--color-gray-90);
+}
+.postlist-date {
+	word-spacing: -0.5px;
+}
+.postlist-link {
+	font-size: 1.1875em; /* 19px /16 */
+	font-weight: 700;
+	flex-basis: calc(100% - 1.5rem);
+	padding-left: .25em;
+	padding-right: .5em;
+	text-underline-position: from-font;
+	text-underline-offset: 0;
+	text-decoration-thickness: 1px;
+}
+.postlist-item-active .postlist-link {
+	font-weight: bold;
+}
+
+/* Tags */
+.post-tag {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-transform: capitalize;
+	font-style: italic;
+}
+.postlist-item > .post-tag {
+	align-self: center;
+}
+
+/* Tags list */
+.post-metadata {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: .5em;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.post-metadata time {
+	margin-right: 1em;
+}
+
+/* Direct Links / Markdown Headers */
+.header-anchor {
+	text-decoration: none;
+	font-style: normal;
+	font-size: 1em;
+	margin-left: .1em;
+}
+a[href].header-anchor,
+a[href].header-anchor:visited {
+	color: transparent;
+}
+a[href].header-anchor:focus,
+a[href].header-anchor:hover {
+	text-decoration: underline;
+}
+a[href].header-anchor:focus,
+:hover > a[href].header-anchor {
+	color: #aaa;
+}
+
+h2 + .header-anchor {
+	font-size: 1.5em;
+}</style>
+	</head>
+	<body>
+		<a href="#skip" class="visually-hidden">Skip to main content</a>
+
+		<header>
+			<a href="/" class="home-link">Razvan Popa&#39;s website</a>
+			<nav>
+				<h2 class="visually-hidden">Top level navigation menu</h2>
+				<ul class="nav">
+					<li class="nav-item"><a href="/">Home</a></li>
+					<li class="nav-item"><a href="/blog/">Archive</a></li>
+					<li class="nav-item"><a href="/about/">About Me</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		<main id="skip">
+			
+<h1>Swimming spots around Subiaco</h1>
+
+<ul class="post-metadata">
+	<li><time datetime="2023-10-23">23 October 2023</time></li>
+	<li><a href="/tags/subiaco/" class="post-tag">Subiaco</a></li>
+</ul>
+
+<h1 id="beatty-park-leisure-centre" tabindex="-1">Beatty Park Leisure Centre <a class="header-anchor" href="#beatty-park-leisure-centre">#</a></h1>
+<h2 id="pools" tabindex="-1"><a href="https://www.beattypark.com.au/aquatics/our-pools.aspx">Pools</a> <a class="header-anchor" href="#pools">#</a></h2>
+<p>25m indoor pool: 31°C, 8 slow/medium/fast lanes, 0.9 to 1.25m deep</p>
+<p>Indoor leisure pool and water playground: 31°C, 0.9 m deep</p>
+<p>Indoor slide pool: 31°C, 2 slides, 1.05m deep</p>
+<p>50m outdoor pool: 26.5°C, 10 slow/medium/fast lanes, 1.2 to 1.8m deep</p>
+<p>30m outdoor pool: 26.5°C, no lane ropes, 1.8m deep. <em>Closed for repairs from 22 May 2023.</em></p>
+<p>12x12m outdoor pool: 26.5°C, 0.9 to 1.2m deep. <em>Closed for repairs from 22 May 2023.</em></p>
+<h2 id="memberships-no-joining-fees" tabindex="-1"><a href="https://www.beattypark.com.au/fitness/memberships.aspx">Memberships (no joining fees)</a> <a class="header-anchor" href="#memberships-no-joining-fees">#</a></h2>
+<p>$59/month for pool, spa sauna + steamroom, aquafitness classes</p>
+<p>$93.33/month everything for above + gym and group fitness classes</p>
+<table>
+<thead>
+<tr>
+<th>Casual entry fees</th>
+<th>1</th>
+<th>10</th>
+<th>20 entries</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Swim</td>
+<td>$7.50</td>
+<td>$67.50</td>
+<td>$127.50</td>
+</tr>
+<tr>
+<td>Spa sauna + steamroom (includes swimming)</td>
+<td>$14.00</td>
+<td>$126.00</td>
+<td>$238.00</td>
+</tr>
+<tr>
+<td>Gym (includes swimming)</td>
+<td>$19.50</td>
+<td>$175.50</td>
+<td>$331.50</td>
+</tr>
+<tr>
+<td>Group fitness and Aqua fitness (includes swimming)</td>
+<td>$19.50</td>
+<td>$175.50</td>
+<td>$331.50</td>
+</tr>
+<tr>
+<td>(spectator is free 😁)</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h1 id="lords" tabindex="-1">Lords <a class="header-anchor" href="#lords">#</a></h1>
+<p>Oh my this is complicated...</p>
+<h2 id="pools-1" tabindex="-1"><a href="https://www.lords.com.au/my-fitness/pool">Pools</a> <a class="header-anchor" href="#pools-1">#</a></h2>
+<p>25m: ~30°C, 6 lanes, 1.1m deep</p>
+<p>Membership (sports courts cost extra - basketball etc)</p>
+<h3 id="direct-debit-memberships" tabindex="-1">Direct debit memberships <a class="header-anchor" href="#direct-debit-memberships">#</a></h3>
+<p>$41.50/fortnight peak access for everything anytime</p>
+<p>$35.50/fortnight off-peak access (08:00 - 15:00 Mon - Fri, anytime Sat and Sun)</p>
+<p>$18.50/fortnight for pool and sauna only, 12:30 - 15:30 Mon - Fri, 12:30 - close Sat, all Sun</p>
+<h3 id="upfront-memberships" tabindex="-1">Upfront memberships <a class="header-anchor" href="#upfront-memberships">#</a></h3>
+<p>$87.50/month peak access for gym, group fitness, pool, sauna. No suspension</p>
+<p>$1065/year peak access for gym, group fitness, pool, sauna</p>
+<p>$915/year off-peak access for gym, group fitness, pool, sauna</p>
+<h3 id="pool-only-memberships" tabindex="-1">Pool only memberships <a class="header-anchor" href="#pool-only-memberships">#</a></h3>
+<p>$40/month for pool only, 12:30 - 15:30 Mon - Fri, 12:30 - close Sat, all Sun</p>
+<p>$470/12 month for pool only, 12:30 - 15:30 Mon - Fri, 12:30 - close Sat, all Sun</p>
+<p>$180 Visit Card for 10 entries to a single activity (gym, group fitness class OR pool)</p>
+<p>Casual entry: $20 group fitness entry, $20 gym entry</p>
+<h1 id="bold-park-aquatic-centre" tabindex="-1">Bold Park Aquatic Centre <a class="header-anchor" href="#bold-park-aquatic-centre">#</a></h1>
+<p>Again, lots of prices...</p>
+<h2 id="lap-lane-availability" tabindex="-1"><a href="https://www.boldparkaquatic.com.au/Aquatics/Lap-lane-availability">Lap lane availability</a> <a class="header-anchor" href="#lap-lane-availability">#</a></h2>
+<p>50m outdoor pool: 10 lanes</p>
+<p>20m leisure pool: 4 lanes</p>
+<p>https://www.boldparkaquatic.com.au/Aquatics mentions 8 lane 20m covered pool ??? 8 or 4?</p>
+<h3 id="memberships" tabindex="-1">Memberships <a class="header-anchor" href="#memberships">#</a></h3>
+<p>$599 for 12 months for ... 1</p>
+<p>$699 for 12 months for ... 2... people?</p>
+<p>$499 for 12 months for off-peak (09:00 - 15:00 Mon - Fri)</p>
+<p>$59 monthly direct debit for ... 1</p>
+<p>$67 monthly direct debit for ... 2... people?</p>
+<p>$48 monthly direct debit for off-peak</p>
+<table>
+<thead>
+<tr>
+<th>Casual entry fees</th>
+<th>1</th>
+<th>10</th>
+<th>20 entries</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td>$6.80</td>
+<td>$61.20</td>
+<td>$116.00</td>
+</tr>
+</tbody>
+</table>
+<p>... and others</p>
+<h1 id="hbf-stadium" tabindex="-1">HBF Stadium <a class="header-anchor" href="#hbf-stadium">#</a></h1>
+<h2 id="pools-2" tabindex="-1"><a href="https://www.hbfstadium.com.au/swim/">Pools</a> <a class="header-anchor" href="#pools-2">#</a></h2>
+<p>50m indoor pool: 27°C, 8 lane - I remember this being pretty deep, ~2m</p>
+<p>50m outdoor pool: 27°C, 8 lane</p>
+<p>50m outdoor pool: 27°C, 10 lane</p>
+<p>Also indoor: diving pool (4.3m), water polo pool</p>
+<h3 id="memberships-plus-36-setup-fee" tabindex="-1">Memberships (plus $36 setup fee) <a class="header-anchor" href="#memberships-plus-36-setup-fee">#</a></h3>
+<p>$21.60/week adult flexi (gym, group fitness, pool)
+$20.00/week adult 12 months (gym, group fitness, pool)
+$1015.00/year adult 12 months (gym, group fitness, pool)</p>
+<h3 id="prices" tabindex="-1"><a href="https://www.hbfstadium.com.au/swim/pool-facilities/entry-prices">Prices</a> <a class="header-anchor" href="#prices">#</a></h3>
+<p>Casual entry fees</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>1</th>
+<th>10</th>
+<th>20 entries</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Adult</td>
+<td>$7.10</td>
+<td>$63.70</td>
+<td>$127.30</td>
+</tr>
+<tr>
+<td>Concession</td>
+<td>$5.50</td>
+<td>$48.60</td>
+<td>$97.20</td>
+</tr>
+<tr>
+<td>Child</td>
+<td>$5.20</td>
+<td>$45.90</td>
+<td>$91.80</td>
+</tr>
+</tbody>
+</table>
+<p>$2.60 spectator :(</p>
+<h1 id="stirling-leisure-centre-scarborough-beach-pool-there-are-2-more-pool-in-inglewood-and-balga" tabindex="-1">Stirling Leisure Centre - Scarborough Beach Pool (there are 2 more pool, in Inglewood and Balga) <a class="header-anchor" href="#stirling-leisure-centre-scarborough-beach-pool-there-are-2-more-pool-in-inglewood-and-balga">#</a></h1>
+<h2 id="pool" tabindex="-1"><a href="https://www.stirling.wa.gov.au/leisure-and-culture/leisure-centres/swimming/about-our-pools">Pool</a> <a class="header-anchor" href="#pool">#</a></h2>
+<p>50m outdoor: 27°C, 8 lane, 1.2 to 2.2m</p>
+<p>25m outdoor: 27°C, 4 lane, 1.2 to 2.2m?</p>
+<h3 id="memberships-to-scarborough-beach-pool-plus-50-00-joining-fee" tabindex="-1">Memberships to Scarborough Beach Pool (plus $50.00 joining fee) <a class="header-anchor" href="#memberships-to-scarborough-beach-pool-plus-50-00-joining-fee">#</a></h3>
+<p>$50.00/month for pool plus pool activities (boxing, yoga etc)</p>
+<p>$23.00/fortnight for pool plus pool activities (boxing, yoga etc)</p>
+<h3 id="memberships-to-scarborough-scarborough-beach-pool-terry-tyzack-aquatic-centre-inglewood-leisurepark-balga-plus-50-00-joining-fee" tabindex="-1">Memberships to Scarborough, Scarborough Beach Pool, Terry Tyzack Aquatic Centre (Inglewood), Leisurepark (Balga) (plus $50.00 joining fee) <a class="header-anchor" href="#memberships-to-scarborough-scarborough-beach-pool-terry-tyzack-aquatic-centre-inglewood-leisurepark-balga-plus-50-00-joining-fee">#</a></h3>
+<p>$85.00/month for pool plus pool activities (boxing, yoga etc)</p>
+<p>$39.00/fortnight for pool plus pool activities (boxing, yoga etc)</p>
+<h3 id="casual-entry-fees" tabindex="-1">Casual entry fees <a class="header-anchor" href="#casual-entry-fees">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>1</th>
+<th>10 entries</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Adult</td>
+<td>$8.00</td>
+<td>$72.00</td>
+</tr>
+<tr>
+<td>Concession</td>
+<td>$5.80</td>
+<td>$52.20</td>
+</tr>
+<tr>
+<td>Child</td>
+<td>$5.00</td>
+<td>$45.00</td>
+</tr>
+</tbody>
+</table>
+<h1 id="subiaco-primary-school-pool" tabindex="-1">Subiaco Primary School Pool <a class="header-anchor" href="#subiaco-primary-school-pool">#</a></h1>
+<h2 id="school-pool" tabindex="-1"><a href="https://subiacops.wa.edu.au/community/school-pool/">School pool</a> <a class="header-anchor" href="#school-pool">#</a></h2>
+<p>$55.00 for 10 entries</p>
+<h3 id="hours-during-school-term" tabindex="-1">Hours during school term <a class="header-anchor" href="#hours-during-school-term">#</a></h3>
+<p>Mon - Thu: 15:30 - 18:00</p>
+<p>Fri: 15:30 - 18:30</p>
+<p>Sat: 13:00 - 18:30</p>
+<p>Sun: 13:00 - 18:00</p>
+
+<ul class="links-nextprev"><li>Previous: <a href="/blog/fourthpost/">This is my fourth post.</a></li>
+</ul>
+
+		</main>
+
+		<footer></footer>
+
+		<!-- Current page: /blog/swimmingAroundSubiaco/ -->
+	</body>
+</html>
