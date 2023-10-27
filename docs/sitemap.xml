@@ -2,82 +2,62 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 	
 	<url>
-		<loc>https://www.razvanpopa.name/blog/firstpost/</loc>
-		<lastmod>2018-05-01</lastmod>
-	</url>
-	
-	<url>
-		<loc>https://www.razvanpopa.name/apps/blah/</loc>
+		<loc>https://www.razvanpopa.name/eleventy-base-blog/apps/blah/</loc>
 		<lastmod>2018-07-04</lastmod>
 	</url>
 	
 	<url>
-		<loc>https://www.razvanpopa.name/blog/secondpost/</loc>
-		<lastmod>2018-07-04</lastmod>
-	</url>
-	
-	<url>
-		<loc>https://www.razvanpopa.name/blog/thirdpost/</loc>
-		<lastmod>2018-08-24</lastmod>
-	</url>
-	
-	<url>
-		<loc>https://www.razvanpopa.name/blog/fourthpost/</loc>
-		<lastmod>2018-09-30</lastmod>
-	</url>
-	
-	<url>
-		<loc>https://www.razvanpopa.name/about/</loc>
+		<loc>https://www.razvanpopa.name/eleventy-base-blog/about/</loc>
 		<lastmod>2023-08-06</lastmod>
 	</url>
 	
 	<url>
-		<loc>https://www.razvanpopa.name/blog/</loc>
+		<loc>https://www.razvanpopa.name/eleventy-base-blog/blog/</loc>
 		<lastmod>2023-08-06</lastmod>
 	</url>
 	
 	<url>
-		<loc>https://www.razvanpopa.name/tags/</loc>
+		<loc>https://www.razvanpopa.name/eleventy-base-blog/tags/</loc>
 		<lastmod>2023-08-06</lastmod>
 	</url>
 	
 	<url>
-		<loc>https://www.razvanpopa.name/tags/blahg/</loc>
+		<loc>https://www.razvanpopa.name/eleventy-base-blog/tags/blahg/</loc>
 		<lastmod>2023-08-06</lastmod>
 	</url>
 	
 	<url>
-		<loc>https://www.razvanpopa.name/tags/subiaco/</loc>
+		<loc>https://www.razvanpopa.name/eleventy-base-blog/tags/another-tag/</loc>
 		<lastmod>2023-08-06</lastmod>
 	</url>
 	
 	<url>
-		<loc>https://www.razvanpopa.name/tags/another-tag/</loc>
+		<loc>https://www.razvanpopa.name/eleventy-base-blog/tags/number-2/</loc>
 		<lastmod>2023-08-06</lastmod>
 	</url>
 	
 	<url>
-		<loc>https://www.razvanpopa.name/tags/number-2/</loc>
+		<loc>https://www.razvanpopa.name/eleventy-base-blog/tags/subiaco/</loc>
 		<lastmod>2023-08-06</lastmod>
 	</url>
 	
 	<url>
-		<loc>https://www.razvanpopa.name/tags/second-tag/</loc>
+		<loc>https://www.razvanpopa.name/eleventy-base-blog/tags/second-tag/</loc>
 		<lastmod>2023-08-06</lastmod>
 	</url>
 	
 	<url>
-		<loc>https://www.razvanpopa.name/tags/posts-with-two-tags/</loc>
+		<loc>https://www.razvanpopa.name/eleventy-base-blog/tags/posts-with-two-tags/</loc>
 		<lastmod>2023-08-06</lastmod>
 	</url>
 	
 	<url>
-		<loc>https://www.razvanpopa.name/blog/swimming-around-Subiaco/</loc>
+		<loc>https://www.razvanpopa.name/eleventy-base-blog/blog/swimming-around-Subiaco/</loc>
 		<lastmod>2023-10-23</lastmod>
 	</url>
 	
 	<url>
-		<loc>https://www.razvanpopa.name/</loc>
+		<loc>https://www.razvanpopa.name/eleventy-base-blog/</loc>
 		<lastmod>2023-10-27</lastmod>
 	</url>
 </urlset>
