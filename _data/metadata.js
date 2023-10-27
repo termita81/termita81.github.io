@@ -1,6 +1,6 @@
 module.exports = {
 	title: "Razvan Popa's website",
-	url: "https://example.com/",
+	url: "https://www.razvanpopa.name/",
 	language: "en",
 	description: "I am writing about stuff.",
 	author: {

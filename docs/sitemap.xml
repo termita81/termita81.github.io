@@ -2,87 +2,82 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 	
 	<url>
-		<loc>https://example.com/blog/firstpost/</loc>
+		<loc>https://www.razvanpopa.name/blog/firstpost/</loc>
 		<lastmod>2018-05-01</lastmod>
 	</url>
 	
 	<url>
-		<loc>https://example.com/blog/secondpost/</loc>
+		<loc>https://www.razvanpopa.name/apps/blah/</loc>
 		<lastmod>2018-07-04</lastmod>
 	</url>
 	
 	<url>
-		<loc>https://example.com/apps/blah/</loc>
+		<loc>https://www.razvanpopa.name/blog/secondpost/</loc>
 		<lastmod>2018-07-04</lastmod>
 	</url>
 	
 	<url>
-		<loc>https://example.com/blog/thirdpost/</loc>
+		<loc>https://www.razvanpopa.name/blog/thirdpost/</loc>
 		<lastmod>2018-08-24</lastmod>
 	</url>
 	
 	<url>
-		<loc>https://example.com/blog/fourthpost/</loc>
+		<loc>https://www.razvanpopa.name/blog/fourthpost/</loc>
 		<lastmod>2018-09-30</lastmod>
 	</url>
 	
 	<url>
-		<loc>https://example.com/blog/fifthpost/</loc>
-		<lastmod>2023-01-23</lastmod>
-	</url>
-	
-	<url>
-		<loc>https://example.com/about/</loc>
+		<loc>https://www.razvanpopa.name/about/</loc>
 		<lastmod>2023-08-06</lastmod>
 	</url>
 	
 	<url>
-		<loc>https://example.com/blog/</loc>
+		<loc>https://www.razvanpopa.name/blog/</loc>
 		<lastmod>2023-08-06</lastmod>
 	</url>
 	
 	<url>
-		<loc>https://example.com/tags/</loc>
+		<loc>https://www.razvanpopa.name/tags/</loc>
 		<lastmod>2023-08-06</lastmod>
 	</url>
 	
 	<url>
-		<loc>https://example.com/tags/another-tag/</loc>
+		<loc>https://www.razvanpopa.name/tags/blahg/</loc>
 		<lastmod>2023-08-06</lastmod>
 	</url>
 	
 	<url>
-		<loc>https://example.com/tags/number-2/</loc>
+		<loc>https://www.razvanpopa.name/tags/subiaco/</loc>
 		<lastmod>2023-08-06</lastmod>
 	</url>
 	
 	<url>
-		<loc>https://example.com/tags/subiaco/</loc>
+		<loc>https://www.razvanpopa.name/tags/another-tag/</loc>
 		<lastmod>2023-08-06</lastmod>
 	</url>
 	
 	<url>
-		<loc>https://example.com/tags/second-tag/</loc>
+		<loc>https://www.razvanpopa.name/tags/number-2/</loc>
 		<lastmod>2023-08-06</lastmod>
 	</url>
 	
 	<url>
-		<loc>https://example.com/tags/posts-with-two-tags/</loc>
+		<loc>https://www.razvanpopa.name/tags/second-tag/</loc>
 		<lastmod>2023-08-06</lastmod>
 	</url>
 	
 	<url>
-		<loc>https://example.com/tags/blahg/</loc>
+		<loc>https://www.razvanpopa.name/tags/posts-with-two-tags/</loc>
 		<lastmod>2023-08-06</lastmod>
 	</url>
 	
 	<url>
-		<loc>https://example.com/blog/swimmingAroundSubiaco/</loc>
+		<loc>https://www.razvanpopa.name/blog/swimming-around-Subiaco/</loc>
 		<lastmod>2023-10-23</lastmod>
 	</url>
 	
 	<url>
-		<loc>https://example.com/</loc>
+		<loc>https://www.razvanpopa.name/</loc>
 		<lastmod>2023-10-27</lastmod>
 	</url>
 </urlset>
