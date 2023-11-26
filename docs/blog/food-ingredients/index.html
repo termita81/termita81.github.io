@@ -3,8 +3,8 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>Razvan Popa&#39;s website</title>
-		<meta name="description" content="I am writing about stuff.">
+		<title>Basic food ingredients</title>
+		<meta name="description" content="Where does salt come from? how about flour?">
 		<link rel="alternate" href="/feed/feed.xml" type="application/atom+xml" title="Razvan Popa&#39;s website">
 		<link rel="alternate" href="/feed/feed.json" type="application/json" title="Razvan Popa&#39;s website">
 
@@ -12,24 +12,173 @@
 
 		<!-- or link CSS <link rel="stylesheet" href="/css/style.css"> -->
 		
-		<style>.postlist { counter-reset: start-from 8 }
-/* Message Box */
-.message-box {
-	--color-message-box: #ffc;
+		<style>/**
+ * okaidia theme for JavaScript, CSS and HTML
+ * Loosely based on Monokai textmate theme by http://www.monokai.nl/
+ * @author ocodia
+ */
 
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #f8f8f2;
+	background: none;
+	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+	border-radius: 0.3em;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #272822;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #8292a2;
+}
+
+.token.punctuation {
+	color: #f8f8f2;
+}
+
+.token.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #f92672;
+}
+
+.token.boolean,
+.token.number {
+	color: #ae81ff;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #a6e22e;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+	color: #f8f8f2;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.function,
+.token.class-name {
+	color: #e6db74;
+}
+
+.token.keyword {
+	color: #66d9ef;
+}
+
+.token.regex,
+.token.important {
+	color: #fd971f;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+/*
+ * New diff- syntax
+ */
+
+pre[class*="language-diff-"] {
+	--eleventy-code-padding: 1.25em;
+	padding-left: var(--eleventy-code-padding);
+	padding-right: var(--eleventy-code-padding);
+}
+.token.deleted {
+	background-color: hsl(0, 51%, 37%);
+	color: inherit;
+}
+.token.inserted {
+	background-color: hsl(126, 31%, 39%);
+	color: inherit;
+}
+
+/* Make the + and - characters unselectable for copy/paste */
+.token.prefix.unchanged,
+.token.prefix.inserted,
+.token.prefix.deleted {
+	-webkit-user-select: none;
+	user-select: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.token.prefix.inserted,
+.token.prefix.deleted {
+	width: var(--eleventy-code-padding);
+	background-color: rgba(0,0,0,.2);
+}
+
+/* Optional: full-width background color */
+.token.inserted:not(.prefix),
+.token.deleted:not(.prefix) {
 	display: block;
-	background-color: var(--color-message-box);
-	color: var(--color-gray-90);
-	padding: 1em 0.625em; /* 16px 10px /16 */
-}
-.message-box ol {
-	margin-top: 0;
-}
-
-@media (prefers-color-scheme: dark) {
-	.message-box {
-		--color-message-box: #082840;
-	}
+	margin-left: calc(-1 * var(--eleventy-code-padding));
+	margin-right: calc(-1 * var(--eleventy-code-padding));
+	text-decoration: none; /* override del, ins, mark defaults */
+	color: inherit; /* override del, ins, mark defaults */
 }
 * { box-sizing: border-box; }
 /* Defaults */
@@ -311,7 +460,7 @@ h2 + .header-anchor {
 			<nav>
 				<h2 class="visually-hidden">Top level navigation menu</h2>
 				<ul class="nav">
-					<li class="nav-item"><a href="/" aria-current="page">Home</a></li>
+					<li class="nav-item"><a href="/">Home</a></li>
 					<li class="nav-item"><a href="/blog/">Archive</a></li>
 					<li class="nav-item"><a href="/about/">About Me</a></li>
 				</ul>
@@ -319,76 +468,98 @@ h2 + .header-anchor {
 		</header>
 
 		<main id="skip">
-			<!-- Delete this message, it will also remove the component CSS from the bundle -->
-<!--
-<div class="message-box">
-	<ol>
-		<li>Edit the <code>_data/metadata.js</code> with your blog’s information.</li>
-		<li>(Optional) Edit <code>eleventy.config.js</code> with your <a href="https://www.11ty.dev/docs/config/">configuration preferences</a>.</li>
-		<li>Delete this message from <code>_includes/layouts/home.njk</code>.</li>
-	</ol>
-	<p><em>This is an <a href="https://www.11ty.dev/">Eleventy project</a> created from the <a href="https://github.com/11ty/eleventy-base-blog"><code>eleventy-base-blog</code> repo</a>.</em></p>
-</div>
-<! -- Stop deleting -->
+			
+<h1>Basic food ingredients</h1>
 
+<ul class="post-metadata">
+	<li><time datetime="2023-10-23">23 October 2023</time></li>
+	<li><a href="/tags/kitchen/" class="post-tag">kitchen</a>, </li>
+	<li><a href="/tags/ingredients/" class="post-tag">ingredients</a></li>
+</ul>
 
+<h1 id="curious-about-my-food-stuffz" tabindex="-1">Curious about my food stuffz <a class="header-anchor" href="#curious-about-my-food-stuffz">#</a></h1>
+<h2 id="basic-dry-spices" tabindex="-1">Basic dry spices <a class="header-anchor" href="#basic-dry-spices">#</a></h2>
+<ul>
+<li>Coarse salt</li>
+<li>Black peppercorns</li>
+<li>Paprika</li>
+<li>Bay leaves</li>
+<li>Thyme</li>
+<li>Cinnamon</li>
+</ul>
+<!-- - Red chili flakes -->
+<!-- - Coriander -->
+<!-- - Fennel seeds -->
+<!-- - Oregano -->
+<!-- - Turmeric -->
+<!-- - Whole nutmeg -->
+<!-- - Cayenne pepper -->
+<h2 id="pantry" tabindex="-1">Pantry <a class="header-anchor" href="#pantry">#</a></h2>
+<ul>
+<li>Pasta</li>
+<li>Rice</li>
+<li>All-purpose flour</li>
+<li>White sugar</li>
+<li>Baking powder</li>
+<li>Active dry yeast</li>
+</ul>
+<!-- - Couscous
+- Panko bread crumbs
+- Brown sugar
+- Chicken stock
+- Beef stock
+- Powdered sugar -->
+<h2 id="refrigerator" tabindex="-1">Refrigerator <a class="header-anchor" href="#refrigerator">#</a></h2>
+<ul>
+<li>Milk</li>
+<li>Butter</li>
+<li>Eggs</li>
+<li>Bacon</li>
+<li>Parsley</li>
+<li>Celery</li>
+<li>Carrots</li>
+<li>Lemons</li>
+</ul>
+<!-- - Heavy cream
+- Parmesan
+- Limes
+- Orange juice -->
+<h2 id="condiments" tabindex="-1">Condiments <a class="header-anchor" href="#condiments">#</a></h2>
+<ul>
+<li>Ketchup</li>
+<li>Extra virgin olive oil</li>
+<li>Vegetable oil</li>
+<li>Canola/olive oil</li>
+<li>Vinegar</li>
+<li>Mustard</li>
+<li>Honey</li>
+</ul>
+<!-- - Mayonnaise -->
+<h2 id="vegetables" tabindex="-1">Vegetables <a class="header-anchor" href="#vegetables">#</a></h2>
+<ul>
+<li>Garlic</li>
+<li>Shallots</li>
+<li>Potatoes — Royal Blue</li>
+<li>Onions — yellow</li>
+<li>Onions — red</li>
+<li>Tomatoes</li>
+</ul>
+<h2 id="canned-goods" tabindex="-1">Canned Goods <a class="header-anchor" href="#canned-goods">#</a></h2>
+<ul>
+<li>Tomatoes — diced</li>
+<li>Tomato sauce</li>
+<li>Tomato paste</li>
+<li>Tomatoes — crushed</li>
+<li>Beans</li>
+</ul>
 
-<h1>Latest 7 Posts</h1>
-
-
-
-
-<ol reversed class="postlist">
-
-	<li class="postlist-item">
-		<a href="/blog/swimming-around-Subiaco/" class="postlist-link">Swimming spots around Subiaco</a>
-		<time class="postlist-date" datetime="2023-10-23">October 2023</time>
-	</li>
-
-	<li class="postlist-item">
-		<a href="/blog/food-ingredients/" class="postlist-link">Basic food ingredients</a>
-		<time class="postlist-date" datetime="2023-10-23">October 2023</time>
-	</li>
-
-	<li class="postlist-item">
-		<a href="/blog/fifthpost/" class="postlist-link">This is a fifth post (draft)</a>
-		<time class="postlist-date" datetime="2023-01-23">January 2023</time>
-	</li>
-
-	<li class="postlist-item">
-		<a href="/blog/fourthpost/" class="postlist-link">This is my fourth post.</a>
-		<time class="postlist-date" datetime="2018-09-30">September 2018</time>
-	</li>
-
-	<li class="postlist-item">
-		<a href="/blog/thirdpost/" class="postlist-link">This is my third post.</a>
-		<time class="postlist-date" datetime="2018-08-24">August 2018</time>
-	</li>
-
-	<li class="postlist-item">
-		<a href="/blog/secondpost/" class="postlist-link">This is my second post with a much longer title.</a>
-		<time class="postlist-date" datetime="2018-07-04">July 2018</time>
-	</li>
-
-	<li class="postlist-item">
-		<a href="/blog/firstpost/" class="postlist-link">This is my first post.</a>
-		<time class="postlist-date" datetime="2018-05-01">May 2018</time>
-	</li>
-
-</ol>
-
-
-
-
-
-
-
-
+<ul class="links-nextprev"><li>Previous: <a href="/blog/fifthpost/">This is a fifth post (draft)</a></li><li>Next: <a href="/blog/swimming-around-Subiaco/">Swimming spots around Subiaco</a></li>
+</ul>
 
 		</main>
 
 		<footer></footer>
 
-		<!-- Current page: / -->
+		<!-- Current page: /blog/food-ingredients/ -->
 	</body>
 </html>
