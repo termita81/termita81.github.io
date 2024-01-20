@@ -27,11 +27,6 @@
 	</url>
 	
 	<url>
-		<loc>https://www.razvanpopa.name/tags/another-tag/</loc>
-		<lastmod>2023-08-06</lastmod>
-	</url>
-	
-	<url>
 		<loc>https://www.razvanpopa.name/tags/kitchen/</loc>
 		<lastmod>2023-08-06</lastmod>
 	</url>
@@ -42,12 +37,17 @@
 	</url>
 	
 	<url>
-		<loc>https://www.razvanpopa.name/tags/subiaco/</loc>
+		<loc>https://www.razvanpopa.name/tags/number-2/</loc>
 		<lastmod>2023-08-06</lastmod>
 	</url>
 	
 	<url>
-		<loc>https://www.razvanpopa.name/tags/number-2/</loc>
+		<loc>https://www.razvanpopa.name/tags/another-tag/</loc>
+		<lastmod>2023-08-06</lastmod>
+	</url>
+	
+	<url>
+		<loc>https://www.razvanpopa.name/tags/subiaco/</loc>
 		<lastmod>2023-08-06</lastmod>
 	</url>
 	
