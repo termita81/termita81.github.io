@@ -56,7 +56,7 @@ if (fs.existsSync(ARTICLES_SRC)) {
     // Replace placeholders in article template
     let articleHtml = articleTemplate
       .replace('{{title}}', title)
-      .replace('{{date}}', parsed.date)
+      .replaceAll('{{date}}', parsed.date) // multiple occurrences
       .replace('{{content}}', html);
 
     // Wrap in default template
