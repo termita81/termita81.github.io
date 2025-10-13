@@ -68,11 +68,39 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
+  border: 2px solid var(--bg-secondary);
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) var(--bg-secondary);
+}
+
 /* Header */
 .site-header {
   background-color: var(--bg-secondary);
   border-bottom: 1px solid var(--border);
-  padding: 1rem 2rem;
+  padding: 1rem 0;
   position: sticky;
   top: 0;
   z-index: 100;
@@ -81,7 +109,9 @@ body {
 
 .site-nav {
   max-width: 1200px;
+  min-width: 300px;
   margin: 0 auto;
+  padding: 0 clamp(10px, 2vw, 2rem);
   display: flex;
   align-items: center;
   gap: 2rem;
@@ -100,8 +130,8 @@ body {
 
 .theme-toggle {
   margin-left: auto;
-  background: none;
-  border: 1px solid var(--border);
+  background-color: var(--bg-primary);
+  border: 2px solid var(--border);
   border-radius: 50%;
   width: 2.5rem;
   height: 2.5rem;
@@ -109,16 +139,18 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
 .theme-toggle:hover {
-  background-color: var(--bg-primary);
   border-color: var(--accent);
+  transform: scale(1.1);
 }
 
 .theme-icon {
   font-size: 1.5rem;
+  color: var(--text-primary);
+  transition: color 0.2s ease;
 }
 
 /* Main Content */
@@ -126,8 +158,9 @@ body {
   flex: 1;
   width: 100%;
   max-width: 1200px;
+  min-width: 300px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: clamp(10px, 2vw, 2rem);
   overflow-y: auto;
 }
 
@@ -179,8 +212,8 @@ body {
 
 /* Article Page */
 .article {
-  max-width: 800px;
-  margin: 0 auto;
+  width: 100%;
+  margin: 0;
 }
 
 .article-header {
@@ -291,8 +324,8 @@ body {
 
 /* About Page */
 .about {
-  max-width: 800px;
-  margin: 0 auto;
+  width: 100%;
+  margin: 0;
 }
 
 .about h1 {
@@ -309,16 +342,8 @@ body {
 
 /* Responsive */
 @media (max-width: 768px) {
-  .site-header {
-    padding: 1rem;
-  }
-
   .site-nav {
     gap: 1rem;
-  }
-
-  .site-main {
-    padding: 1rem;
   }
 
   .article-title,
@@ -328,5 +353,11 @@ body {
 
   .article-content {
     font-size: 1rem;
+  }
+}
+
+@media (max-width: 320px) {
+  .site-main {
+    min-width: 300px;
   }
 }

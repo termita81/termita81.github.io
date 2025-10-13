@@ -21,6 +21,15 @@
     return savedTheme;
   }
 
+  // Update icon based on current theme
+  function updateIcon(theme) {
+    const icon = document.querySelector('.theme-icon');
+    if (icon) {
+      // Show sun icon in dark mode (click to go light), moon in light mode (click to go dark)
+      icon.textContent = theme === 'dark' ? '☀' : '🌙';
+    }
+  }
+
   // Apply theme to document
   function applyTheme(theme) {
     if (theme === 'dark') {
@@ -28,6 +37,7 @@
     } else {
       document.documentElement.setAttribute('data-theme', 'light');
     }
+    updateIcon(theme);
   }
 
   // Get current theme (from data attribute or OS preference)
