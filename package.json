@@ -1,0 +1,25 @@
+{
+  "name": "termita81.github.io",
+  "version": "1.0.0",
+  "description": "Served from the repo's /docs directory",
+  "main": "index.js",
+  "scripts": {
+    "build": "node build.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/termita81/termita81.github.io.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/termita81/termita81.github.io/issues"
+  },
+  "homepage": "https://github.com/termita81/termita81.github.io#readme",
+  "devDependencies": {
+    "marked": "^16.4.0"
+  }
+}
