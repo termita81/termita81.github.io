@@ -1,7 +1,7 @@
 # Javascript style
 
-Do not include semicolons
+Do not include semicolons at the end of Javascript statement, unless necessary
 
 # Project structure
 
-Do not edit files under docs directory
+Ignore files under docs directory
