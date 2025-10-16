@@ -3,8 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
   <title>Home - My Blog</title>
   <link rel="stylesheet" href="/styles/main.css">
+  <script>
+    // Apply theme immediately to prevent flash
+    (function() {
+      const savedTheme = localStorage.getItem('site-theme')
+
+      // Handle the three modes: 'light', 'dark', or 'system'
+      if (savedTheme === 'light') {
+        document.documentElement.classList.add('light-theme')
+      } else if (savedTheme === 'dark') {
+        document.documentElement.classList.add('dark-theme')
+      }
+      // If savedTheme is 'system' or null, don't add any class
+      // CSS will use the prefers-color-scheme media query
+    })()
+  </script>
 </head>
 <body>
   <header class="site-header">

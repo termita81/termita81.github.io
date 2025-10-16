@@ -1,77 +1,94 @@
-// Theme switcher with OS preference support
+// Theme switcher with light, dark, and system options
 (function() {
-  const THEME_KEY = 'site-theme';
-  const themeToggle = document.getElementById('theme-toggle');
+  const THEME_KEY = 'site-theme'
+  const themeToggle = document.getElementById('theme-toggle')
 
   // Detect OS color scheme preference
   function getOSThemePreference() {
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
+      return 'dark'
     }
-    return 'light';
+    return 'light'
   }
 
-  // Get saved theme or default to OS preference
-  function getSavedTheme() {
-    const savedTheme = localStorage.getItem(THEME_KEY);
-    // If no saved preference, use OS preference
+  // Get saved theme mode or default to 'system'
+  function getSavedThemeMode() {
+    const savedTheme = localStorage.getItem(THEME_KEY)
+    // If no saved preference, default to system
     if (savedTheme === null) {
-      return getOSThemePreference();
+      return 'system'
     }
-    return savedTheme;
+    return savedTheme
   }
 
-  // Update icon based on current theme
-  function updateIcon(theme) {
-    const icon = document.querySelector('.theme-icon');
+  // Update icon based on current theme mode
+  function updateIcon(mode) {
+    const icon = document.querySelector('.theme-icon')
     if (icon) {
-      // Show sun icon in dark mode (click to go light), moon in light mode (click to go dark)
-      icon.textContent = theme === 'dark' ? '☀' : '🌙';
+      // Different icons for each mode: light (sun), dark (moon), system (auto/circle)
+      if (mode === 'light') {
+        icon.textContent = '☀️'
+      } else if (mode === 'dark') {
+        icon.textContent = '🌙'
+      } else {
+        icon.textContent = '◐' // system/auto
+      }
     }
   }
 
-  // Apply theme to document
-  function applyTheme(theme) {
-    if (theme === 'dark') {
-      document.documentElement.setAttribute('data-theme', 'dark');
-    } else {
-      document.documentElement.setAttribute('data-theme', 'light');
+  // Apply theme to document based on mode
+  function applyTheme(mode) {
+    // Remove all theme classes first
+    document.documentElement.classList.remove('light-theme', 'dark-theme')
+
+    if (mode === 'light') {
+      document.documentElement.classList.add('light-theme')
+    } else if (mode === 'dark') {
+      document.documentElement.classList.add('dark-theme')
     }
-    updateIcon(theme);
+    // If mode is 'system', no class is added - CSS will use media query
+
+    updateIcon(mode)
   }
 
-  // Get current theme (from data attribute or OS preference)
-  function getCurrentTheme() {
-    const dataTheme = document.documentElement.getAttribute('data-theme');
-    if (dataTheme) {
-      return dataTheme;
-    }
-    return getOSThemePreference();
+  // Get current theme mode (from localStorage)
+  function getCurrentThemeMode() {
+    return getSavedThemeMode()
   }
 
-  // Toggle between light and dark
+  // Cycle through themes: light → dark → system → light
   function toggleTheme() {
-    const currentTheme = getCurrentTheme();
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    applyTheme(newTheme);
-    localStorage.setItem(THEME_KEY, newTheme);
+    const currentMode = getCurrentThemeMode()
+    let newMode
+
+    if (currentMode === 'light') {
+      newMode = 'dark'
+    } else if (currentMode === 'dark') {
+      newMode = 'system'
+    } else {
+      newMode = 'light'
+    }
+
+    applyTheme(newMode)
+    localStorage.setItem(THEME_KEY, newMode)
   }
 
   // Initialize theme on page load
-  applyTheme(getSavedTheme());
+  applyTheme(getSavedThemeMode())
 
-  // Listen for OS theme changes (if user changes system preference)
+  // Listen for OS theme changes (only applies when in system mode)
   if (window.matchMedia) {
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-      // Only update if user hasn't manually set a preference
-      if (localStorage.getItem(THEME_KEY) === null) {
-        applyTheme(e.matches ? 'dark' : 'light');
+      // Only update if user is in system mode
+      if (getSavedThemeMode() === 'system') {
+        // Re-apply system theme to trigger any visual updates
+        applyTheme('system')
       }
-    });
+    })
   }
 
   // Add click handler to toggle button
   if (themeToggle) {
-    themeToggle.addEventListener('click', toggleTheme);
+    themeToggle.addEventListener('click', toggleTheme)
   }
-})();
+})()
