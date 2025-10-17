@@ -19,7 +19,7 @@
 			} else if (mode === 'dark') {
 				icon.textContent = '🌙'
 			} else {
-				icon.textContent = '⚙️'// 💻🖥️🤖📱
+				icon.textContent = '🌗'// ⚙️💻🖥️🤖📱
 			}
 		}
 	}
