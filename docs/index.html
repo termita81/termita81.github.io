@@ -6,6 +6,8 @@
   <meta name="color-scheme" content="light dark">
   <title>Home - My Blog</title>
   <link rel="stylesheet" href="/styles/main.css">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0066cc">
   <script>
     // Apply theme immediately to prevent flash
     (function() {
@@ -49,5 +51,16 @@
   </main>
 
   <script src="/scripts/theme.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(function(registration) {
+          console.log('Service Worker registered with scope:', registration.scope)
+        })
+        .catch(function(error) {
+          console.log('Service Worker registration failed:', error)
+        })
+    }
+  </script>
 </body>
 </html>

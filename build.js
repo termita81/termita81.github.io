@@ -127,8 +127,32 @@ if (fs.existsSync(scriptsSrc)) {
 	})
 }
 
+// Copy PWA files
+const manifestSrc = path.join(SRC_DIR, 'manifest.json')
+if (fs.existsSync(manifestSrc)) {
+	fs.copyFileSync(manifestSrc, path.join(DOCS_DIR, 'manifest.json'))
+}
+
+const serviceWorkerSrc = path.join(SRC_DIR, 'service-worker.js')
+if (fs.existsSync(serviceWorkerSrc)) {
+	fs.copyFileSync(serviceWorkerSrc, path.join(DOCS_DIR, 'service-worker.js'))
+}
+
+const iconsSrc = path.join(SRC_DIR, 'icons')
+const iconsDest = path.join(DOCS_DIR, 'icons')
+if (fs.existsSync(iconsSrc)) {
+	if (!fs.existsSync(iconsDest)) fs.mkdirSync(iconsDest, { recursive: true })
+	fs.readdirSync(iconsSrc).forEach(file => {
+		fs.copyFileSync(
+			path.join(iconsSrc, file),
+			path.join(iconsDest, file)
+		)
+	})
+}
+
 console.log(`✓ Built ${articles.length} article(s)`)
 console.log(`✓ Generated home page`)
 console.log(`✓ Generated about page`)
 console.log(`✓ Copied static assets`)
+console.log(`✓ Copied PWA files`)
 console.log(`\nBuild complete! Output in ${DOCS_DIR}/`)
