@@ -11,89 +11,74 @@ const urlsToCache = [
 	'/icons/icon-512.png'
 ]
 
-self.addEventListener('install', function(event) {
+self.addEventListener('install', function (event) {
 	event.waitUntil(
 		caches.open(CACHE_NAME)
-			.then(function(cache) {
-				return cache.addAll(urlsToCache).catch(function(error) {
-					console.error('Failed to cache resources during install:', error)
-					throw error
+				.then(function (cache) {
+					return cache.addAll(urlsToCache).catch(function (error) {
+						console.error('Failed to cache resources during install:', error)
+						throw error
+					})
 				})
-			})
 	)
 	self.skipWaiting()
 })
 
-self.addEventListener('message', async function(event) {
+self.addEventListener('message', function (event) {
 	if (event.data && event.data.type === 'CHECK_VERSIONS') {
-		try {
-			const response = await fetch('/apps/versions.json')
-			const versions = await response.json()
-			
-			const clients = await clients.matchAll({ type: 'window' })
-			const installedApps = await getInstalledApps()
-			
-			const updates = {}
-			Object.entries(versions).forEach(([appName, info]) => {
-				const installedVersion = localStorage.getItem(`app:${appName}:version`)
-				if (installedVersion && info.latestVersion !== installedVersion) {
-					updates[appName] = {
-						current: installedVersion,
-						latest: info.latestVersion
-					}
-				}
-			})
-			
-			if (Object.keys(updates).length > 0) {
-				clients.forEach(client => {
-					client.postMessage({
-						type: 'APPS_UPDATED',
-						updates: updates
-					})
+		fetch('/apps/versions.json')
+				.then(response => response.json())
+				.then(versions => {
+					return clients.matchAll({ type: 'window' })
+								.then(clients => {
+									const updates = {}
+									clients.forEach(client => {
+										client.postMessage({ type: 'APPS_UPDATED', updates: updates })
+									})
+								})
 				})
-			}
-		} catch (error) {
-			console.error('Failed to fetch versions:', error)
-		}
+				.catch(error => {
+					console.error('Failed to fetch versions:', error)
+				})
 	}
 })
 
-self.addEventListener('fetch', function(event) {
+self.addEventListener('fetch', function (event) {
 	if (event.request.method !== 'GET') {
 		return
 	}
 
 	event.respondWith(
 		caches.match(event.request)
-			.then(function(response) {
-				if (response) {
-					return response
-				}
-				
-				if (event.request.url.startsWith('/apps/')) {
-					return handleAppRequest(event.request)
-				}
-				
-				return fetch(event.request).then(
-					function(response) {
-						if(!response || response.status !== 200 || (response.type !== 'basic' && response.type !== 'cors')) {
+					.then(function (response) {
+						if (response) {
 							return response
 						}
-						const responseToCache = response.clone()
-						caches.open(APPS_CACHE_NAME)
-							.then(function(cache) {
-								cache.put(event.request, responseToCache)
-							})
-							.catch(function(error) {
-								console.error('Failed to cache response:', error)
-							})
-						return response
-					}
-				).catch(function(error) {
-					console.error('Fetch failed:', error)
-					return caches.match('/index.html')
-				})
-			})
+						
+						if (event.request.url.startsWith('/apps/')) {
+							return handleAppRequest(event.request)
+						}
+						
+						return fetch(event.request).then(
+								function (response) {
+									if (!response || response.status !== 200 || (response.type !== 'basic' && response.type !== 'cors')) {
+										return response
+									}
+									const responseToCache = response.clone()
+									caches.open(APPS_CACHE_NAME)
+											.then(function (cache) {
+												cache.put(event.request, responseToCache)
+											})
+											.catch(function (error) {
+												console.error('Failed to cache response:', error)
+											})
+									return response
+								}
+						).catch(function (error) {
+							console.error('Fetch failed:', error)
+							return caches.match('/index.html')
+						})
+					})
 	)
 })
 
@@ -110,7 +95,6 @@ async function handleAppRequest(request) {
 }
 
 async function installApp(appName, version) {
-	const versionKey = `apps:${appName}:${version}`
 	const cache = await caches.open(APPS_CACHE_NAME)
 	
 	const appUrl = `/apps/${appName}/index.html`
@@ -133,63 +117,49 @@ async function uninstallApp(appName) {
 	return true
 }
 
-async function getInstalledApps() {
-	const cache = await caches.open(APPS_CACHE_NAME)
-	const keys = await cache.keys()
-	const appNameSet = new Set()
-	
-	keys.forEach(key => {
-		const match = key.url.match(/\/apps\/([^/]+)\//)
-		if (match) {
-			appNameSet.add(match[1])
-		}
-	})
-	
-	return Array.from(appNameSet)
-}
-
-self.addEventListener('activate', function(event) {
+self.addEventListener('activate', function (event) {
 	const cacheWhitelist = [CACHE_NAME, APPS_CACHE_NAME]
 	event.waitUntil(
-		caches.keys().then(function(cacheNames) {
+		caches.keys().then(function (cacheNames) {
 			return Promise.all(
-				cacheNames.map(function(cacheName) {
-					if (cacheWhitelist.indexOf(cacheName) === -1) {
-						return caches.delete(cacheName)
-					}
-				})
+					cacheNames.map(function (cacheName) {
+						if (cacheWhitelist.indexOf(cacheName) === -1) {
+							return caches.delete(cacheName)
+						}
+					})
 			)
 		})
 	)
 	self.clients.claim()
 })
 
-self.addEventListener('message', function(event) {
+self.addEventListener('message', function (event) {
 	if (event.data && event.data.type === 'INSTALL_APP') {
 		event.waitUntil(
-			installApp(event.data.appName, event.data.version)
-				.then(success => {
-					if (success) {
-						event.ports[0].postMessage({ success: true, type: 'INSTALL_COMPLETE' })
-					} else {
-						event.ports[0].postMessage({ success: false, type: 'INSTALL_ERROR' })
-					}
-				})
-				.catch(error => {
-					console.error('Install failed:', error)
-					event.ports[0].postMessage({ success: false, type: 'INSTALL_ERROR', error: error.message })
-				})
-	}
-	
-	if (event.data && event.data.type === 'UNINSTALL_APP') {
-		event.waitUntil(
-			uninstallApp(event.data.appName)
-				.then(() => {
-					event.ports[0].postMessage({ success: true, type: 'UNINSTALL_COMPLETE' })
-				})
-				.catch(error => {
-					console.error('Uninstall failed:', error)
-					event.ports[0].postMessage({ success: false, type: 'UNINSTALL_ERROR', error: error.message })
-				})
-	}
-})
+				installApp(event.data.appName, event.data.version)
+						.then(success => {
+							if (success) {
+								event.ports[0].postMessage({ success: true, type: 'INSTALL_COMPLETE' })
+							} else {
+								event.ports[0].postMessage({ success: false, type: 'INSTALL_ERROR' })
+							}
+						})
+						.catch(error => {
+							console.error('Install failed:', error)
+							event.ports[0].postMessage({ success: false, type: 'INSTALL_ERROR', error: error.message })
+						})
+	)
+		
+		if (event.data && event.data.type === 'UNINSTALL_APP') {
+			event.waitUntil(
+					uninstallApp(event.data.appName)
+							.then(() => {
+								event.ports[0].postMessage({ success: true, type: 'UNINSTALL_COMPLETE' })
+							})
+							.catch(error => {
+								console.error('Uninstall failed:', error)
+								event.ports[0].postMessage({ success: false, type: 'UNINSTALL_ERROR', error: error.message })
+							})
+			)
+		}
+}

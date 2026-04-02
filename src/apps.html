@@ -1,136 +1,129 @@
 <div class="apps">
 	<div id="update-banner" style="display: none;">
-		<p>Update available!</p>
-		<button id="reload-btn">Reload to update</button>
+				<p>Update available!</p>
+				<button id="reload-btn">Reload to update</button>
 	</div>
 	
 	<h1>Apps</h1>
 	<p>My personal applications and tools.</p>
 	
 	<div id="apps-container">
-		<div class="loading">
-			<p>Loading apps...</p>
-		</div>
+				<div class="loading">
+					<p>Loading apps...</p>
+				</div>
 	</div>
 	
 	<script>
-	(function() {
-		let installedApps = {}
-		let latestVersions = {}
-		
-		async function load() {
-			const response = await fetch('/apps/versions.json')
-			latestVersions = await response.json()
-			
-			installedApps = JSON.parse(localStorage.getItem('installedApps') || '{}')
-			
-			render()
-			
-			const sw = navigator.serviceWorker
-			if (sw) {
-				sw.addEventListener('message', function(event) {
-					if (event.data && event.data.type === 'APPS_UPDATED') {
-						showAppUpdates(event.data.updates)
-						}
-					if (event.data && event.data.type === 'INSTALL_COMPLETE') {
-						refreshAppList()
-						}
-					if (event.data && event.data.type === 'UNINSTALL_COMPLETE') {
-						refreshAppList()
-						}
-					})
-				}
-			
-			const checkInterval = setInterval(() => {
-				if (!navigator.serviceWorker) return
-				navigator.serviceWorker.ready.then(registration => {
-					registration.active.postMessage({ type: 'CHECK_VERSIONS' })
-					})
-				}, 60000)
-			
-			newerThan = (a, b) => {
+				(function () {
+			let installedApps = {}
+			let latestVersions = {}
+
+			function newerThan(a, b) {
 				return a.split('_').map(n => parseInt(n)).join('.') > b.split('_').map(n => parseInt(n)).join('.')
-			}
-			
-			const updateBtn = document.getElementById('reload-btn')
-			if (updateBtn) {
-				updateBtn.addEventListener('click', () => {
-					window.location.reload()
-					})
-				}
-			})
-			
+									}
+
 			function render() {
 				const container = document.getElementById('apps-container')
 				container.innerHTML = ''
-				
+
 				Object.entries(latestVersions).forEach(([name, info]) => {
 					const installed = installedApps[name]
 					const isOutdated = installed && newerThan(info.latestVersion, installed)
 					const isInstalled = !!installed
-					
+
 					const appEl = document.createElement('div')
 					appEl.className = `app-item ${isInstalled ? 'installed' : ''} ${isOutdated ? 'update-available' : ''}`
 					appEl.innerHTML = `
-						<div class="app-info">
-							<h2>${name.charAt(0).toUpperCase() + name.slice(1)}</h2>
-							<p class="version">${isInstalled ? 'v' + installedApps[name] : 'Not installed'} v${info.latestVersion}</p>
-							<p class="size">${info.latestSize} bytes</p>
-						</div>
-						<button class="app-btn ${isInstalled ? 'uninstall' : ''}" data-action="${isInstalled ? 'uninstall' : 'install'}" data-app="${name}">
-							${isInstalled ? 'Uninstall' : 'Install'}
-						</button>
-					`
-					
-					appEl.querySelector('.app-btn').addEventListener('click', function(e) {
+								<div class="app-info">
+									<h2>${name.charAt(0).toUpperCase() + name.slice(1)}</h2>
+									<p class="version">${isInstalled ? 'v' + installedApps[name] : 'Not installed'} v${info.latestVersion}</p>
+									<p class="size">${info.latestSize} bytes</p>
+								</div>
+								<button class="app-btn ${isInstalled ? 'uninstall' : ''}" data-action="${isInstalled ? 'uninstall' : 'install'}" data-app="${name}">
+									${isInstalled ? 'Uninstall' : 'Install'}
+								</button>
+							`
+
+					appEl.querySelector('.app-btn').addEventListener('click', function () {
 						const app = this.dataset.app
 						const action = this.dataset.action
 						handleAction(action, app)
-						})
-					
+							})
+
 					container.appendChild(appEl)
-					})
-				}
-			
+						})
+					}
+
 			function showAppUpdates(updates) {
 				const banner = document.getElementById('update-banner')
 				if (!Object.keys(updates).length) {
 					banner.style.display = 'none'
 					return
-					}
-				
+						}
+
 				banner.innerHTML = `<p>Updates available for: ${Object.keys(updates).join(', ')}!</p>`
 				banner.style.display = 'block'
-				}
-			
+					}
+
 			function handleAction(action, app) {
 				const port = navigator.serviceWorker.controller
 				if (!port) return
-				
+
 				if (action === 'install') {
-					port.postMessage({ 
-						type: 'INSTALL_APP', 
-						appName: app, 
-						version: latestVersions[app].latestVersion 
-						})
-					} else if (action === 'uninstall') {
+					port.postMessage({
+						type: 'INSTALL_APP',
+						appName: app,
+						version: latestVersions[app].latestVersion
+							})
+						} else if (action === 'uninstall') {
 					port.postMessage({ type: 'UNINSTALL_APP', appName: app })
+						}
 					}
-				}
-			
+
 			function refreshAppList() {
 				installedApps = JSON.parse(localStorage.getItem('installedApps') || '{}')
 				render()
-				}
+					}
 			
-			render()
+				const updateBtn = document.getElementById('reload-btn')
+				if (updateBtn) {
+					updateBtn.addEventListener('click', () => {
+						window.location.reload()
+							})
+						}
+				
+				fetch('/apps/versions.json')
+					.then(response => response.json())
+					.then(versions => {
+					latestVersions = versions
+					installedApps = JSON.parse(localStorage.getItem('installedApps') || '{}')
+					render()
+						})
+					}
 			
-			if (navigator.serviceWorker) {
-				navigator.serviceWorker.ready.then(registration => {
-					registration.active.postMessage({ type: 'CHECK_VERSIONS' })
-					})
-				}
-			})();
+				render()
+
+				if (navigator.serviceWorker) {
+					navigator.serviceWorker.addEventListener('message', function (event) {
+						if (event.data && event.data.type === 'APPS_UPDATED') {
+							showAppUpdates(event.data.updates)
+								}
+							if (event.data && event.data.type === 'INSTALL_COMPLETE') {
+							refreshAppList()
+								}
+							if (event.data && event.data.type === 'UNINSTALL_COMPLETE') {
+							refreshAppList()
+								}
+							})
+					
+					const checkInterval = setInterval(() => {
+						if (!navigator.serviceWorker) return
+						navigator.serviceWorker.ready.then(registration => {
+							registration.active.postMessage({ type: 'CHECK_VERSIONS' })
+								})
+							}, 60000)
+						}
+						})();
 	</script>
 	
 	<p>Built at {{build-date}}</p>
