@@ -75,6 +75,8 @@ if (fs.existsSync(ARTICLES_SRC)) {
 	})
 }
 
+console.log(`✓ Built ${articles.length} article(s)`)
+
 // Sort articles by date (newest first)
 articles.sort((a, b) => b.date.localeCompare(a.date))
 
@@ -93,13 +95,17 @@ const finalHomeHtml = defaultTemplate
 
 fs.writeFileSync(path.join(DOCS_DIR, 'index.html'), finalHomeHtml)
 
+console.log(`✓ Generated home page`)
+
 // Generate about page
 const aboutContent = fs.readFileSync(path.join(SRC_DIR, 'about.html'), 'utf8')
 const finalAboutHtml = defaultTemplate
-	.replace('{{title}}', 'About')
-	.replace('{{content}}', aboutContent)
-	.replace('{{build-date}}', `${new Date().toISOString()}`)
+		.replace('{{title}}', 'About')
+		.replace('{{content}}', aboutContent)
+		.replace('{{build-date}}', `${new Date().toISOString()}`)
 fs.writeFileSync(path.join(DOCS_DIR, 'about.html'), finalAboutHtml)
+
+console.log(`✓ Generated about page`)
 
 // Copy styles
 const stylesSrc = path.join(SRC_DIR, 'styles')
@@ -150,9 +156,32 @@ if (fs.existsSync(iconsSrc)) {
 	})
 }
 
-console.log(`✓ Built ${articles.length} article(s)`)
-console.log(`✓ Generated home page`)
-console.log(`✓ Generated about page`)
 console.log(`✓ Copied static assets`)
+
 console.log(`✓ Copied PWA files`)
+
+// Generate apps page
+const appsContent = fs.readFileSync(path.join(SRC_DIR, 'apps.html'), 'utf8')
+const finalAppsHtml = defaultTemplate
+		.replace('{{title}}', 'Apps')
+		.replace('{{content}}', appsContent)
+		.replace('{{build-date}}', `${new Date().toISOString()}`)
+fs.writeFileSync(path.join(DOCS_DIR, 'apps.html'), finalAppsHtml)
+
+// Copy apps directories
+const appsSrc = path.join(SRC_DIR, 'apps')
+if (fs.existsSync(appsSrc)) {
+	const appsDest = path.join(DOCS_DIR, 'apps')
+	if (!fs.existsSync(appsDest)) fs.mkdirSync(appsDest, { recursive: true })
+	fs.readdirSync(appsSrc).forEach(appDir => {
+		const appSrc = path.join(appsSrc, appDir)
+		const appDest = path.join(appsDest, appDir)
+		if (fs.statSync(appSrc).isDirectory()) {
+			fs.cpSync(appSrc, appDest, { recursive: true })
+		}
+	})
+}
+
+console.log(`✓ Copied apps`)
+
 console.log(`\nBuild complete! Output in ${DOCS_DIR}/`)

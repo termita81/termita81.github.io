@@ -7,3 +7,7 @@
 # Project structure
 
 Files under docs directory are build results.
+
+# Other info
+
+Append your info at the end of the commit messages
