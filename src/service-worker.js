@@ -1,4 +1,5 @@
 const CACHE_NAME = 'termita81-blog-v2'
+const APPS_CACHE_NAME = 'apps-cache-v1'
 const urlsToCache = [
 	'/',
 	'/index.html',
@@ -23,6 +24,40 @@ self.addEventListener('install', function(event) {
 	self.skipWaiting()
 })
 
+self.addEventListener('message', async function(event) {
+	if (event.data && event.data.type === 'CHECK_VERSIONS') {
+		try {
+			const response = await fetch('/apps/versions.json')
+			const versions = await response.json()
+			
+			const clients = await clients.matchAll({ type: 'window' })
+			const installedApps = await getInstalledApps()
+			
+			const updates = {}
+			Object.entries(versions).forEach(([appName, info]) => {
+				const installedVersion = localStorage.getItem(`app:${appName}:version`)
+				if (installedVersion && info.latestVersion !== installedVersion) {
+					updates[appName] = {
+						current: installedVersion,
+						latest: info.latestVersion
+					}
+				}
+			})
+			
+			if (Object.keys(updates).length > 0) {
+				clients.forEach(client => {
+					client.postMessage({
+						type: 'APPS_UPDATED',
+						updates: updates
+					})
+				})
+			}
+		} catch (error) {
+			console.error('Failed to fetch versions:', error)
+		}
+	}
+})
+
 self.addEventListener('fetch', function(event) {
 	if (event.request.method !== 'GET') {
 		return
@@ -34,13 +69,18 @@ self.addEventListener('fetch', function(event) {
 				if (response) {
 					return response
 				}
+				
+				if (event.request.url.startsWith('/apps/')) {
+					return handleAppRequest(event.request)
+				}
+				
 				return fetch(event.request).then(
 					function(response) {
 						if(!response || response.status !== 200 || (response.type !== 'basic' && response.type !== 'cors')) {
 							return response
 						}
 						const responseToCache = response.clone()
-						caches.open(CACHE_NAME)
+						caches.open(APPS_CACHE_NAME)
 							.then(function(cache) {
 								cache.put(event.request, responseToCache)
 							})
@@ -57,8 +97,59 @@ self.addEventListener('fetch', function(event) {
 	)
 })
 
+async function handleAppRequest(request) {
+	const response = await fetch(request)
+	
+	if (!response || response.status !== 200) {
+		return response
+	}
+	
+	const cache = await caches.open(APPS_CACHE_NAME)
+	await cache.put(request, response.clone())
+	return response
+}
+
+async function installApp(appName, version) {
+	const versionKey = `apps:${appName}:${version}`
+	const cache = await caches.open(APPS_CACHE_NAME)
+	
+	const appUrl = `/apps/${appName}/index.html`
+	const response = await fetch(appUrl)
+	
+	if (!response || response.status !== 200) {
+		console.error(`Failed to fetch ${appName}`)
+		return false
+	}
+	
+	await cache.put(appUrl, response.clone())
+	return true
+}
+
+async function uninstallApp(appName) {
+	const cache = await caches.open(APPS_CACHE_NAME)
+	const keys = await cache.keys()
+	
+	await Promise.all(keys.filter(key => key.url.includes(appName)).map(key => cache.delete(key)))
+	return true
+}
+
+async function getInstalledApps() {
+	const cache = await caches.open(APPS_CACHE_NAME)
+	const keys = await cache.keys()
+	const appNameSet = new Set()
+	
+	keys.forEach(key => {
+		const match = key.url.match(/\/apps\/([^/]+)\//)
+		if (match) {
+			appNameSet.add(match[1])
+		}
+	})
+	
+	return Array.from(appNameSet)
+}
+
 self.addEventListener('activate', function(event) {
-	const cacheWhitelist = [CACHE_NAME]
+	const cacheWhitelist = [CACHE_NAME, APPS_CACHE_NAME]
 	event.waitUntil(
 		caches.keys().then(function(cacheNames) {
 			return Promise.all(
@@ -71,4 +162,34 @@ self.addEventListener('activate', function(event) {
 		})
 	)
 	self.clients.claim()
+})
+
+self.addEventListener('message', function(event) {
+	if (event.data && event.data.type === 'INSTALL_APP') {
+		event.waitUntil(
+			installApp(event.data.appName, event.data.version)
+				.then(success => {
+					if (success) {
+						event.ports[0].postMessage({ success: true, type: 'INSTALL_COMPLETE' })
+					} else {
+						event.ports[0].postMessage({ success: false, type: 'INSTALL_ERROR' })
+					}
+				})
+				.catch(error => {
+					console.error('Install failed:', error)
+					event.ports[0].postMessage({ success: false, type: 'INSTALL_ERROR', error: error.message })
+				})
+	}
+	
+	if (event.data && event.data.type === 'UNINSTALL_APP') {
+		event.waitUntil(
+			uninstallApp(event.data.appName)
+				.then(() => {
+					event.ports[0].postMessage({ success: true, type: 'UNINSTALL_COMPLETE' })
+				})
+				.catch(error => {
+					console.error('Uninstall failed:', error)
+					event.ports[0].postMessage({ success: false, type: 'UNINSTALL_ERROR', error: error.message })
+				})
+	}
 })
