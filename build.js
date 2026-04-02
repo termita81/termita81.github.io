@@ -184,4 +184,58 @@ if (fs.existsSync(appsSrc)) {
 
 console.log(`✓ Copied apps`)
 
+// Generate versions.json from apps directory
+const versionSrc = path.join(SRC_DIR, 'apps', 'versions.json')
+const versionDest = path.join(DOCS_DIR, 'apps', 'versions.json')
+
+if (fs.existsSync(appsSrc)) {
+    let versions = {}
+    if (fs.existsSync(versionSrc)) {
+        try {
+            versions = JSON.parse(fs.readFileSync(versionSrc, 'utf8'))
+        } catch (e) {
+            versions = {}
+        }
+    }
+    
+    fs.readdirSync(appsSrc).filter(d => {
+        const dir = path.join(appsSrc, d)
+        return fs.statSync(dir).isDirectory()
+    }).forEach(appDir => {
+        const appPath = path.join(appsSrc, appDir)
+        
+        let totalSize = 0
+        function countDir(dirPath) {
+            fs.readdirSync(dirPath).forEach(file => {
+                const filePath = path.join(dirPath, file)
+                if (fs.statSync(filePath).isDirectory()) {
+                    countDir(filePath)
+                } else {
+                    totalSize += fs.statSync(filePath).size
+                }
+            })
+        }
+        
+        countDir(appPath)
+        
+        if (!versions[appDir]) {
+            versions[appDir] = { 
+                latestVersion: "unknown",
+                latestSize: totalSize 
+            }
+        } else {
+            versions[appDir].latestSize = totalSize
+        }
+    })
+    
+    console.log(`✓ Generated versions.json`)
+    Object.entries(versions)
+        .sort((a, b) => a[0].localeCompare(b[0]))
+        .forEach(([name, info]) => {
+            console.log(`   - ${name}: ${info.latestSize} bytes (${info.latestVersion})`)
+        })
+    
+    fs.writeFileSync(versionDest, JSON.stringify(versions, null, 2))
+}
+
 console.log(`\nBuild complete! Output in ${DOCS_DIR}/`)
