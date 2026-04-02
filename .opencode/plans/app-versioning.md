@@ -5,7 +5,7 @@
 - [x] Create initial `src/apps/versions.json` file
 - [x] Update `build.js` to auto-generate `versions.json` from apps directory
 - [x] Enhance `src/service-worker.js` with dynamic caching and version checking
-- [ ] Update `src/apps.html` with dynamic version display UI
+- [x] Update `src/apps.html` with dynamic version display UI
 - [ ] Add version check script to individual apps (fuel.js/breath.js)
 
 ---
