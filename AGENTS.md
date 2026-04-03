@@ -11,5 +11,5 @@ Files under docs directory are build results/outputs, no direct change to be don
 
 # Work style
 
-1. Append your info ("With AI: <model name and version>") at the end of the commit messages
-2. Create feature branches for each body of work
+1. Create feature branches for each body of work
+2. Append your info ("With AI: <model name and version>") at the end of the commit messages
