@@ -1,10 +1,12 @@
 {
   "fuel": {
     "latestVersion": "2026-04-02_1",
+    "build": "2026-04-03T02:42:55.319Z",
     "latestSize": 151
   },
   "breath": {
     "latestVersion": "2026-04-02_1",
+    "build": "2026-04-03T02:42:55.319Z",
     "latestSize": 161
   }
 }

@@ -133,15 +133,23 @@ if (fs.existsSync(scriptsSrc)) {
 	})
 }
 
-// Copy PWA files
+// Update manifest build timestamp
 const manifestSrc = path.join(SRC_DIR, 'manifest.json')
 if (fs.existsSync(manifestSrc)) {
-	fs.copyFileSync(manifestSrc, path.join(DOCS_DIR, 'manifest.json'))
+	let manifest = JSON.parse(fs.readFileSync(manifestSrc, 'utf8'))
+	manifest.build = new Date().toISOString()
+	fs.writeFileSync(path.join(DOCS_DIR, 'manifest.json'), JSON.stringify(manifest, null, 2))
 }
 
+// Copy service worker with updated cache name
 const serviceWorkerSrc = path.join(SRC_DIR, 'service-worker.js')
 if (fs.existsSync(serviceWorkerSrc)) {
-	fs.copyFileSync(serviceWorkerSrc, path.join(DOCS_DIR, 'service-worker.js'))
+	let serviceWorker = fs.readFileSync(serviceWorkerSrc, 'utf8')
+	serviceWorker = serviceWorker.replace(
+		/const SITE_CACHE_NAME = '.*'/g,
+		`const SITE_CACHE_NAME = 'termita81-site-${new Date().getTime()}'`
+	)
+	fs.writeFileSync(path.join(DOCS_DIR, 'service-worker.js'), serviceWorker)
 }
 
 const iconsSrc = path.join(SRC_DIR, 'icons')
@@ -184,7 +192,7 @@ if (fs.existsSync(appsSrc)) {
 
 console.log(`✓ Copied apps`)
 
-// Generate versions.json from apps directory
+// Generate versions.json with build timestamps from apps directory
 const versionSrc = path.join(SRC_DIR, 'apps', 'versions.json')
 const versionDest = path.join(DOCS_DIR, 'apps', 'versions.json')
 
@@ -193,49 +201,53 @@ if (fs.existsSync(appsSrc)) {
     if (fs.existsSync(versionSrc)) {
         try {
             versions = JSON.parse(fs.readFileSync(versionSrc, 'utf8'))
-        } catch (e) {
+         } catch (e) {
             versions = {}
-        }
-    }
-    
-    fs.readdirSync(appsSrc).filter(d => {
-        const dir = path.join(appsSrc, d)
-        return fs.statSync(dir).isDirectory()
-    }).forEach(appDir => {
-        const appPath = path.join(appsSrc, appDir)
-        
-        let totalSize = 0
-        function countDir(dirPath) {
-            fs.readdirSync(dirPath).forEach(file => {
-                const filePath = path.join(dirPath, file)
-                if (fs.statSync(filePath).isDirectory()) {
-                    countDir(filePath)
-                } else {
-                    totalSize += fs.statSync(filePath).size
-                }
-            })
-        }
-        
-        countDir(appPath)
-        
-        if (!versions[appDir]) {
-            versions[appDir] = { 
-                latestVersion: "unknown",
-                latestSize: totalSize 
-            }
-        } else {
-            versions[appDir].latestSize = totalSize
-        }
-    })
-    
-    console.log(`✓ Generated versions.json`)
-    Object.entries(versions)
-        .sort((a, b) => a[0].localeCompare(b[0]))
-        .forEach(([name, info]) => {
-            console.log(`   - ${name}: ${info.latestSize} bytes (${info.latestVersion})`)
-        })
-    
-    fs.writeFileSync(versionDest, JSON.stringify(versions, null, 2))
+         }
+     }
+     
+     const buildTimestamp = new Date().toISOString()
+     
+     fs.readdirSync(appsSrc).filter(d => {
+         const dir = path.join(appsSrc, d)
+         return fs.statSync(dir).isDirectory()
+      }).forEach(appDir => {
+         const appPath = path.join(appsSrc, appDir)
+         
+         let totalSize = 0
+         function countDir(dirPath) {
+             fs.readdirSync(dirPath).forEach(file => {
+                 const filePath = path.join(dirPath, file)
+                 if (fs.statSync(filePath).isDirectory()) {
+                     countDir(filePath)
+                  } else {
+                     totalSize += fs.statSync(filePath).size
+                  }
+              })
+          }
+         
+         countDir(appPath)
+         
+         if (!versions[appDir]) {
+             versions[appDir] = { 
+                 latestVersion: "unknown",
+                 build: buildTimestamp,
+                 latestSize: totalSize 
+              }
+          } else {
+             versions[appDir].build = buildTimestamp
+             versions[appDir].latestSize = totalSize
+          }
+      })
+     
+     console.log(`✓ Generated versions.json`)
+     Object.entries(versions)
+          .sort((a, b) => a[0].localeCompare(b[0]))
+          .forEach(([name, info]) => {
+             console.log(`    - ${name}: ${info.latestSize} bytes (${info.latestVersion}) [build: ${info.build}]`)
+          })
+     
+     fs.writeFileSync(versionDest, JSON.stringify(versions, null, 2))
 }
 
 console.log(`\nBuild complete! Output in ${DOCS_DIR}/`)
