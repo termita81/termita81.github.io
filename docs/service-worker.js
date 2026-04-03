@@ -1,4 +1,4 @@
-const SITE_CACHE_NAME = 'termita81-site-1775184175317'
+const SITE_CACHE_NAME = 'termita81-site-1775184582668'
 const APPS_CACHE_NAME = 'apps-cache-v1'
 
 const urlsToCache = [
@@ -57,7 +57,7 @@ async function getInstalledApps() {
 	}
 }
 
-async function getInstalledVersion(appName) {
+async function _getInstalledVersion(appName) {
 	try {
 		const db = await openMetadataDB()
 		const tx = db.transaction(APP_METADATA_STORE, 'readonly')
@@ -75,7 +75,7 @@ async function getInstalledVersion(appName) {
 	}
 }
 
-async function setInstalledVersion(appName, version) {
+async function _setInstalledVersion(appName, version) {
 	try {
 		const db = await openMetadataDB()
 		const tx = db.transaction(APP_METADATA_STORE, 'readwrite')
@@ -113,7 +113,7 @@ async function clearInstalledVersion(appName) {
 
 self.addEventListener('install', function (event) {
 	event.waitUntil(
-		caches.open(CACHE_NAME)
+		caches.open(SITE_CACHE_NAME)
 			.then(function (cache) {
 				return cache.addAll(urlsToCache).catch(function (error) {
 					console.error('Failed to cache resources during install:', error)
@@ -154,7 +154,7 @@ self.addEventListener('message', async function (event) {
 		return
 	}
 
-	if (!event.data || !event.ports[0]) return
+	if (!event.data || !event.ports[0]) {return}
 
 	if (event.data.type === 'INSTALL_APP') {
 		const appName = event.data.appName
@@ -295,7 +295,7 @@ async function uninstallApp(appName) {
 }
 
 self.addEventListener('activate', function (event) {
-	const cacheWhitelist = [CACHE_NAME, APPS_CACHE_NAME]
+	const cacheWhitelist = [SITE_CACHE_NAME, APPS_CACHE_NAME]
 	event.waitUntil(
 		caches.keys().then(function (cacheNames) {
 			return Promise.all(
