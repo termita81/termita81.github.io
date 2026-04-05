@@ -1,4 +1,4 @@
-const SITE_CACHE_NAME = 'termita81-site-1775184582668'
+const SITE_CACHE_NAME = 'termita81-site-1775354118584'
 const APPS_CACHE_NAME = 'apps-cache-v1'
 
 const urlsToCache = [

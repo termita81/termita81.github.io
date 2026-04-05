@@ -8,6 +8,8 @@ const ARTICLES_SRC = path.join(SRC_DIR, 'articles')
 const ARTICLES_DEST = path.join(DOCS_DIR, 'articles')
 const TEMPLATES_DIR = path.join(SRC_DIR, 'templates')
 
+const buildDate = new Date().toISOString()
+
 // Ensure output directories exist
 if (!fs.existsSync(DOCS_DIR)) fs.mkdirSync(DOCS_DIR, { recursive: true })
 if (!fs.existsSync(ARTICLES_DEST)) fs.mkdirSync(ARTICLES_DEST, { recursive: true })
@@ -53,16 +55,17 @@ if (fs.existsSync(ARTICLES_SRC)) {
 		const html = marked.parse(content)
 		const outputFile = `${parsed.date}-${parsed.slug}.html`
 
-		// Replace placeholders in article template
+// Replace placeholders in article template
 		let articleHtml = articleTemplate
-			.replace('{{title}}', title)
-			.replaceAll('{{date}}', parsed.date) // multiple occurrences
-			.replace('{{content}}', html)
+				.replace('{{title}}', title)
+				.replaceAll('{{date}}', parsed.date)
+				.replace('{{content}}', html)
 
-		// Wrap in default template
+			// Wrap in default template
 		const finalHtml = defaultTemplate
-			.replace('{{title}}', title)
-			.replace('{{content}}', articleHtml)
+				.replace('{{title}}', title)
+				.replace('{{content}}', articleHtml)
+				.replace('{{build-date}}', buildDate)
 
 		fs.writeFileSync(path.join(ARTICLES_DEST, outputFile), finalHtml)
 
@@ -90,8 +93,9 @@ let articleListHtml = articles.map(article => `
 
 let homeHtml = homeTemplate.replace('{{articles}}', articleListHtml)
 const finalHomeHtml = defaultTemplate
-	.replace('{{title}}', 'Home')
-	.replace('{{content}}', homeHtml)
+		.replace('{{title}}', 'Home')
+		.replace('{{content}}', homeHtml)
+		.replace('{{build-date}}', buildDate)
 
 fs.writeFileSync(path.join(DOCS_DIR, 'index.html'), finalHomeHtml)
 
@@ -100,9 +104,9 @@ console.log(`✓ Generated home page`)
 // Generate about page
 const aboutContent = fs.readFileSync(path.join(SRC_DIR, 'about.html'), 'utf8')
 const finalAboutHtml = defaultTemplate
-		.replace('{{title}}', 'About')
-		.replace('{{content}}', aboutContent)
-		.replace('{{build-date}}', `${new Date().toISOString()}`)
+			.replace('{{title}}', 'About')
+			.replace('{{content}}', aboutContent)
+			.replace('{{build-date}}', buildDate)
 fs.writeFileSync(path.join(DOCS_DIR, 'about.html'), finalAboutHtml)
 
 console.log(`✓ Generated about page`)
@@ -171,9 +175,9 @@ console.log(`✓ Copied PWA files`)
 // Generate apps page
 const appsContent = fs.readFileSync(path.join(SRC_DIR, 'apps.html'), 'utf8')
 const finalAppsHtml = defaultTemplate
-		.replace('{{title}}', 'Apps')
-		.replace('{{content}}', appsContent)
-		.replace('{{build-date}}', `${new Date().toISOString()}`)
+			.replace('{{title}}', 'Apps')
+			.replace('{{content}}', appsContent)
+			.replace('{{build-date}}', buildDate)
 fs.writeFileSync(path.join(DOCS_DIR, 'apps.html'), finalAppsHtml)
 
 // Copy apps directories

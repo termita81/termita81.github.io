@@ -308,10 +308,25 @@ body {
   margin-bottom: 0.5rem;
 }
 
+/* Footer */
+.site-footer {
+   margin-top: 4rem;
+   padding: 2rem 0 4rem;
+   border-top: 1px solid var(--border);
+}
+
+.site-footer p {
+   margin: 0;
+   text-align: left;
+   padding-left: 0.75rem;
+   color: var(--text-secondary);
+   font-size: 0.875rem;
+}
+
 /* About Page */
 .about {
-  width: 100%;
-  margin: 0;
+   width: 100%;
+   margin: 0;
 }
 
 .about h1 {
