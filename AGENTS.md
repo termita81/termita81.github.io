@@ -13,8 +13,8 @@
 
 # Architecture
 - Plain HTML + vanilla JS (no framework)
-- Source code lives in `src/` directory
-- Output in `docs/` directory
+- Source code lives in `src/` directory - any and all code changes happen ONLY IN src/!
+- Output in `docs/` directory - NO CODE CHANGE HERE!
 
 # PWA Apps
 - Installable apps live in `src/apps/{app-name}/`
@@ -22,10 +22,11 @@
 - Apps directory is excluded from templating
 
 # Style Rules (from AGENTS.md)
-1. No semicolons at end of statements unless necessary
-2. Avoid obvious comments; prefer "why" over "what"
-3. Write logical code with appropriate abstractions
-4. Avoid functions that only call other functions
+- No semicolons at end of statements unless necessary
+- Avoid obvious comments; prefer "why" over "what"
+- Write logical code with appropriate abstractions
+- Favour small functions with clear purpose and scope
+- Avoid functions that only call other functions
 
 # Constraints
 - No test framework currently (test script exits 1)
