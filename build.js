@@ -151,7 +151,7 @@ if (fs.existsSync(serviceWorkerSrc)) {
 	let serviceWorker = fs.readFileSync(serviceWorkerSrc, 'utf8')
 	serviceWorker = serviceWorker.replace(
 		/const SITE_CACHE_NAME = '.*'/g,
-		`const SITE_CACHE_NAME = 'termita81-site-${new Date().getTime()}'`
+		`const SITE_CACHE_NAME = 'site-${(new Date().toISOString())}'`
 	)
 	fs.writeFileSync(path.join(DOCS_DIR, 'service-worker.js'), serviceWorker)
 }
