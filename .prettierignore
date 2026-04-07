@@ -1,0 +1,13 @@
+# Ignore build and service worker files
+docs/**/*
+
+# Ignore Prettier config files
+.prettierrc
+
+# Ignore PWA apps (though they might need formatting)
+src/apps/fuel/index.html
+src/apps/breath/index.html
+
+# Ignore generated files
+package-lock.json
+.eslint.cache
