@@ -1,4 +1,4 @@
-const SITE_CACHE_NAME = 'site-2026-04-07T08:52:09.377Z'
+const SITE_CACHE_NAME = 'site-2026-04-07T09:29:01.322Z'
 const APPS_CACHE_NAME = 'apps-cache-v1'
 
 const urlsToCache = [
