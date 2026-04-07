@@ -1,12 +1,12 @@
 {
-    "fuel": {
-       "latestVersion": "2026-04-02_1",
-       "build": "2026-04-02T12:00:00Z",
-       "latestSize": "156 byte"
-    },
-    "breath": {
-       "latestVersion": "2026-04-02_1",
-       "build": "2026-04-02T12:00:00Z",
-       "latestSize": "142 byte"
-    }
+	"fuel": {
+		"latestVersion": "2026-04-02_1",
+		"build": "2026-04-02T12:00:00Z",
+		"latestSize": "156 byte"
+	},
+	"breath": {
+		"latestVersion": "2026-04-02_1",
+		"build": "2026-04-02T12:00:00Z",
+		"latestSize": "142 byte"
+	}
 }

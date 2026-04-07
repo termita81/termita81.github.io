@@ -15,12 +15,14 @@
 **Goal**: Simple PWA-based system where users can install/uninstall apps and receive update notifications.
 
 **Key Components**:
+
 1. Single root-level Service Worker (no per-app SW)
 2. Manual version strings (e.g., `2026-04-02_1`)
 3. Latest version only in `versions.json`
 4. Version checks only on apps page (not individual apps)
 
 **File Changes**:
+
 - New: `src/apps/versions.json` (auto-generated)
 - Modified: `build.js` (add version generation)
 - Modified: `src/service-worker.js` (dynamic caching + messages)
@@ -29,6 +31,7 @@
 - Modified: `src/apps/breath/breath.js` (version check)
 
 **Workflow**:
+
 1. User visits apps page → fetches versions.json
 2. Compares with localStorage → shows update banner
 3. User clicks Install → SW caches app files
