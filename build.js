@@ -12,12 +12,22 @@ const buildDate = new Date().toISOString()
 
 // Ensure output directories exist
 if (!fs.existsSync(DOCS_DIR)) fs.mkdirSync(DOCS_DIR, { recursive: true })
-if (!fs.existsSync(ARTICLES_DEST)) fs.mkdirSync(ARTICLES_DEST, { recursive: true })
+if (!fs.existsSync(ARTICLES_DEST))
+	fs.mkdirSync(ARTICLES_DEST, { recursive: true })
 
 // Read templates
-const defaultTemplate = fs.readFileSync(path.join(TEMPLATES_DIR, 'default.html'), 'utf8')
-const articleTemplate = fs.readFileSync(path.join(TEMPLATES_DIR, 'article.html'), 'utf8')
-const homeTemplate = fs.readFileSync(path.join(TEMPLATES_DIR, 'home.html'), 'utf8')
+const defaultTemplate = fs.readFileSync(
+	path.join(TEMPLATES_DIR, 'default.html'),
+	'utf8'
+)
+const articleTemplate = fs.readFileSync(
+	path.join(TEMPLATES_DIR, 'article.html'),
+	'utf8'
+)
+const homeTemplate = fs.readFileSync(
+	path.join(TEMPLATES_DIR, 'home.html'),
+	'utf8'
+)
 
 // Helper function to extract title from markdown
 function extractTitle(content) {
@@ -38,15 +48,13 @@ function parseFilename(filename) {
 	return null
 }
 
-// Process articles
-const articles = []
-if (fs.existsSync(ARTICLES_SRC)) {
-	const files = fs.readdirSync(ARTICLES_SRC).filter(f => f.endsWith('.md'))
-
-	files.forEach(file => {
+function getArticles() {
+	function processFile(file) {
 		const parsed = parseFilename(file)
 		if (!parsed) {
-			console.warn(`Skipping ${file} - invalid filename format (expected YYYY-MM-DD-title.md)`)
+			console.warn(
+				`Skipping ${file} - invalid filename format (expected YYYY-MM-DD-title.md)`
+			)
 			return
 		}
 
@@ -55,17 +63,17 @@ if (fs.existsSync(ARTICLES_SRC)) {
 		const html = marked.parse(content)
 		const outputFile = `${parsed.date}-${parsed.slug}.html`
 
-// Replace placeholders in article template
+		// Replace placeholders in article template
 		let articleHtml = articleTemplate
-				.replace('{{title}}', title)
-				.replaceAll('{{date}}', parsed.date)
-				.replace('{{content}}', html)
+			.replace('{{title}}', title)
+			.replaceAll('{{date}}', parsed.date)
+			.replace('{{content}}', html)
 
-			// Wrap in default template
+		// Wrap in default template
 		const finalHtml = defaultTemplate
-				.replace('{{title}}', title)
-				.replace('{{content}}', articleHtml)
-				.replace('{{build-date}}', buildDate)
+			.replace('{{title}}', title)
+			.replace('{{content}}', articleHtml)
+			.replace('{{build-date}}', buildDate)
 
 		fs.writeFileSync(path.join(ARTICLES_DEST, outputFile), finalHtml)
 
@@ -75,114 +83,156 @@ if (fs.existsSync(ARTICLES_SRC)) {
 			slug: parsed.slug,
 			url: `/articles/${outputFile}`
 		})
-	})
+	}
+
+	// Process articles
+	const articles = []
+
+	if (fs.existsSync(ARTICLES_SRC)) {
+		const files = fs.readdirSync(ARTICLES_SRC).filter(f => f.endsWith('.md'))
+
+		files.forEach(processFile)
+	}
+
+	// Sort articles by date (newest first)
+	articles.sort((a, b) => b.date.localeCompare(a.date))
+
+	console.log(`✓ Built ${articles.length} article(s)`)
+
+	return articles
 }
 
-console.log(`✓ Built ${articles.length} article(s)`)
-
-// Sort articles by date (newest first)
-articles.sort((a, b) => b.date.localeCompare(a.date))
-
-// Generate home page with article list
-let articleListHtml = articles.map(article => `
+function getArticlesHtml(articles) {
+	// Generate home page with article list
+	const articleListHtml = articles
+		.map(
+			article => `
   <article class="article-preview">
     <h2><a href="${article.url}">${article.title}</a></h2>
     <time datetime="${article.date}">${article.date}</time>
   </article>
-`).join('\n')
+`
+		)
+		.join('\n')
+	return articleListHtml
+}
 
-let homeHtml = homeTemplate.replace('{{articles}}', articleListHtml)
-const finalHomeHtml = defaultTemplate
+function buildHomePage(articleListHtml) {
+	const homeHtml = homeTemplate.replace('{{articles}}', articleListHtml)
+	const finalHomeHtml = defaultTemplate
 		.replace('{{title}}', 'Home')
 		.replace('{{content}}', homeHtml)
 		.replace('{{build-date}}', buildDate)
 
-fs.writeFileSync(path.join(DOCS_DIR, 'index.html'), finalHomeHtml)
+	fs.writeFileSync(path.join(DOCS_DIR, 'index.html'), finalHomeHtml)
 
-console.log(`✓ Generated home page`)
+	console.log(`✓ Generated home page`)
+}
 
-// Generate about page
-const aboutContent = fs.readFileSync(path.join(SRC_DIR, 'about.html'), 'utf8')
-const finalAboutHtml = defaultTemplate
-			.replace('{{title}}', 'About')
-			.replace('{{content}}', aboutContent)
-			.replace('{{build-date}}', buildDate)
-fs.writeFileSync(path.join(DOCS_DIR, 'about.html'), finalAboutHtml)
+function buildAboutPage() {
+	// Generate about page
+	const aboutContent = fs.readFileSync(path.join(SRC_DIR, 'about.html'), 'utf8')
+	const finalAboutHtml = defaultTemplate
+		.replace('{{title}}', 'About')
+		.replace('{{content}}', aboutContent)
+		.replace('{{build-date}}', buildDate)
+	fs.writeFileSync(path.join(DOCS_DIR, 'about.html'), finalAboutHtml)
 
-console.log(`✓ Generated about page`)
+	console.log(`✓ Generated about page`)
+}
 
-// Copy styles
-const stylesSrc = path.join(SRC_DIR, 'styles')
-const stylesDest = path.join(DOCS_DIR, 'styles')
-if (fs.existsSync(stylesSrc)) {
-	if (!fs.existsSync(stylesDest)) fs.mkdirSync(stylesDest, { recursive: true })
-	fs.readdirSync(stylesSrc).forEach(file => {
-		fs.copyFileSync(
-			path.join(stylesSrc, file),
-			path.join(stylesDest, file)
-		)
+function copyFiles(source, destination) {
+	if (!fs.existsSync(source)) return
+
+	if (!fs.existsSync(destination))
+		fs.mkdirSync(destination, { recursive: true })
+
+	fs.readdirSync(source).forEach(file => {
+		fs.copyFileSync(path.join(source, file), path.join(destination, file))
 	})
 }
 
-// Copy scripts
-const scriptsSrc = path.join(SRC_DIR, 'scripts')
-const scriptsDest = path.join(DOCS_DIR, 'scripts')
-if (fs.existsSync(scriptsSrc)) {
-	if (!fs.existsSync(scriptsDest)) fs.mkdirSync(scriptsDest, { recursive: true })
-	fs.readdirSync(scriptsSrc).forEach(file => {
-		fs.copyFileSync(
-			path.join(scriptsSrc, file),
-			path.join(scriptsDest, file)
-		)
-	})
+function copyStyles() {
+	// Copy styles
+	const stylesSrc = path.join(SRC_DIR, 'styles')
+	const stylesDest = path.join(DOCS_DIR, 'styles')
+	copyFiles(stylesSrc, stylesDest)
 }
 
-// Update manifest build timestamp
-const manifestSrc = path.join(SRC_DIR, 'manifest.json')
-if (fs.existsSync(manifestSrc)) {
+function copyScripts() {
+	// Copy scripts
+	const scriptsSrc = path.join(SRC_DIR, 'scripts')
+	const scriptsDest = path.join(DOCS_DIR, 'scripts')
+	copyFiles(scriptsSrc, scriptsDest)
+}
+
+function updateManifestBuildTimestamp() {
+	// Update manifest build timestamp
+	const manifestSrc = path.join(SRC_DIR, 'manifest.json')
+	if (!fs.existsSync(manifestSrc)) return
+
 	let manifest = JSON.parse(fs.readFileSync(manifestSrc, 'utf8'))
 	manifest.build = new Date().toISOString()
-	fs.writeFileSync(path.join(DOCS_DIR, 'manifest.json'), JSON.stringify(manifest, null, 2))
-}
-
-// Copy service worker with updated cache name
-const serviceWorkerSrc = path.join(SRC_DIR, 'service-worker.js')
-if (fs.existsSync(serviceWorkerSrc)) {
-	let serviceWorker = fs.readFileSync(serviceWorkerSrc, 'utf8')
-	serviceWorker = serviceWorker.replace(
-		/const SITE_CACHE_NAME = '.*'/g,
-		`const SITE_CACHE_NAME = 'site-${(new Date().toISOString())}'`
+	fs.writeFileSync(
+		path.join(DOCS_DIR, 'manifest.json'),
+		JSON.stringify(manifest, null, 2)
 	)
-	fs.writeFileSync(path.join(DOCS_DIR, 'service-worker.js'), serviceWorker)
 }
 
-const iconsSrc = path.join(SRC_DIR, 'icons')
-const iconsDest = path.join(DOCS_DIR, 'icons')
-if (fs.existsSync(iconsSrc)) {
-	if (!fs.existsSync(iconsDest)) fs.mkdirSync(iconsDest, { recursive: true })
-	fs.readdirSync(iconsSrc).forEach(file => {
-		fs.copyFileSync(
-			path.join(iconsSrc, file),
-			path.join(iconsDest, file)
-		)
-	})
+function buildServiceWorker() {
+	// Copy service worker with updated cache name
+	let source = path.join(SRC_DIR, 'serviceWorker.js')
+	if (!fs.existsSync(source)) {
+		console.error('No service worker script found')
+		return
+	}
+
+	let content = fs.readFileSync(source, 'utf8')
+	content = content.replace(
+		/const SITE_CACHE_NAME = '.*'/g,
+		`const SITE_CACHE_NAME = 'site-${new Date().toISOString()}'`
+	)
+	fs.writeFileSync(path.join(DOCS_DIR, 'serviceWorker.js'), content)
+
+	// Copy installServiceWorker
+	source = path.join(SRC_DIR, 'installServiceWorker.js')
+	if (!fs.existsSync(source)) {
+		console.error('No service worker installer script found')
+		return
+	}
+	content = fs.readFileSync(source, 'utf8')
+	fs.writeFileSync(path.join(DOCS_DIR, 'installServiceWorker.js'), content)
 }
 
-console.log(`✓ Copied static assets`)
+function copyIcons() {
+	const iconsSrc = path.join(SRC_DIR, 'icons')
+	const iconsDest = path.join(DOCS_DIR, 'icons')
+	if (fs.existsSync(iconsSrc)) {
+		if (!fs.existsSync(iconsDest)) fs.mkdirSync(iconsDest, { recursive: true })
+		fs.readdirSync(iconsSrc).forEach(file => {
+			fs.copyFileSync(path.join(iconsSrc, file), path.join(iconsDest, file))
+		})
+	}
 
-console.log(`✓ Copied PWA files`)
+	console.log(`✓ Copied static assets`)
+}
 
-// Generate apps page
-const appsContent = fs.readFileSync(path.join(SRC_DIR, 'apps.html'), 'utf8')
-const finalAppsHtml = defaultTemplate
-			.replace('{{title}}', 'Apps')
-			.replace('{{content}}', appsContent)
-			.replace('{{build-date}}', buildDate)
-fs.writeFileSync(path.join(DOCS_DIR, 'apps.html'), finalAppsHtml)
+function buildAppsPage() {
+	// Generate apps page
+	const appsContent = fs.readFileSync(path.join(SRC_DIR, 'apps.html'), 'utf8')
+	const finalAppsHtml = defaultTemplate
+		.replace('{{title}}', 'Apps')
+		.replace('{{content}}', appsContent)
+		.replace('{{build-date}}', buildDate)
+	fs.writeFileSync(path.join(DOCS_DIR, 'apps.html'), finalAppsHtml)
 
-// Copy apps directories
-const appsSrc = path.join(SRC_DIR, 'apps')
-if (fs.existsSync(appsSrc)) {
+	// Copy apps directories
+	const appsSrc = path.join(SRC_DIR, 'apps')
+	if (!fs.existsSync(appsSrc)) {
+		console.error('No apps found')
+		return
+	}
+
 	const appsDest = path.join(DOCS_DIR, 'apps')
 	if (!fs.existsSync(appsDest)) fs.mkdirSync(appsDest, { recursive: true })
 	fs.readdirSync(appsSrc).forEach(appDir => {
@@ -192,66 +242,84 @@ if (fs.existsSync(appsSrc)) {
 			fs.cpSync(appSrc, appDest, { recursive: true })
 		}
 	})
+
+	console.log(`✓ Copied apps`)
+
+	// Generate versions.json with build timestamps from apps directory
+	const versionSrc = path.join(SRC_DIR, 'apps', 'versions.json')
+	const versionDest = path.join(DOCS_DIR, 'apps', 'versions.json')
+
+	let versions = {}
+	if (fs.existsSync(versionSrc)) {
+		try {
+			versions = JSON.parse(fs.readFileSync(versionSrc, 'utf8'))
+		} catch (e) {
+			versions = {}
+		}
+	}
+
+	const buildTimestamp = new Date().toISOString()
+
+	fs.readdirSync(appsSrc)
+		.filter(d => {
+			const dir = path.join(appsSrc, d)
+			return fs.statSync(dir).isDirectory()
+		})
+		.forEach(appDir => {
+			const appPath = path.join(appsSrc, appDir)
+
+			let totalSize = 0
+			function countDir(dirPath) {
+				fs.readdirSync(dirPath).forEach(file => {
+					const filePath = path.join(dirPath, file)
+					if (fs.statSync(filePath).isDirectory()) {
+						countDir(filePath)
+					} else {
+						totalSize += fs.statSync(filePath).size
+					}
+				})
+			}
+
+			countDir(appPath)
+
+			if (!versions[appDir]) {
+				versions[appDir] = {
+					latestVersion: 'unknown',
+					build: buildTimestamp,
+					latestSize: totalSize
+				}
+			} else {
+				versions[appDir].build = buildTimestamp
+				versions[appDir].latestSize = totalSize
+			}
+		})
+
+	console.log(`✓ Generated versions.json`)
+	Object.entries(versions)
+		.sort((a, b) => a[0].localeCompare(b[0]))
+		.forEach(([name, info]) => {
+			console.log(
+				`    - ${name}: ${info.latestSize} bytes (${info.latestVersion}) [build: ${info.build}]`
+			)
+		})
+
+	fs.writeFileSync(versionDest, JSON.stringify(versions, null, 2))
 }
 
-console.log(`✓ Copied apps`)
+const articles = getArticles()
+const articleListHtml = getArticlesHtml(articles)
+buildHomePage(articleListHtml)
 
-// Generate versions.json with build timestamps from apps directory
-const versionSrc = path.join(SRC_DIR, 'apps', 'versions.json')
-const versionDest = path.join(DOCS_DIR, 'apps', 'versions.json')
+buildAboutPage()
 
-if (fs.existsSync(appsSrc)) {
-    let versions = {}
-    if (fs.existsSync(versionSrc)) {
-        try {
-            versions = JSON.parse(fs.readFileSync(versionSrc, 'utf8'))
-         } catch (e) {
-            versions = {}
-         }
-     }
-     
-     const buildTimestamp = new Date().toISOString()
-     
-     fs.readdirSync(appsSrc).filter(d => {
-         const dir = path.join(appsSrc, d)
-         return fs.statSync(dir).isDirectory()
-      }).forEach(appDir => {
-         const appPath = path.join(appsSrc, appDir)
-         
-         let totalSize = 0
-         function countDir(dirPath) {
-             fs.readdirSync(dirPath).forEach(file => {
-                 const filePath = path.join(dirPath, file)
-                 if (fs.statSync(filePath).isDirectory()) {
-                     countDir(filePath)
-                  } else {
-                     totalSize += fs.statSync(filePath).size
-                  }
-              })
-          }
-         
-         countDir(appPath)
-         
-         if (!versions[appDir]) {
-             versions[appDir] = { 
-                 latestVersion: "unknown",
-                 build: buildTimestamp,
-                 latestSize: totalSize 
-              }
-          } else {
-             versions[appDir].build = buildTimestamp
-             versions[appDir].latestSize = totalSize
-          }
-      })
-     
-     console.log(`✓ Generated versions.json`)
-     Object.entries(versions)
-          .sort((a, b) => a[0].localeCompare(b[0]))
-          .forEach(([name, info]) => {
-             console.log(`    - ${name}: ${info.latestSize} bytes (${info.latestVersion}) [build: ${info.build}]`)
-          })
-     
-     fs.writeFileSync(versionDest, JSON.stringify(versions, null, 2))
-}
+copyStyles()
+copyScripts()
+
+updateManifestBuildTimestamp()
+buildServiceWorker()
+
+copyIcons()
+
+buildAppsPage()
 
 console.log(`\nBuild complete! Output in ${DOCS_DIR}/`)
