@@ -1,72 +1,63 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="color-scheme" content="light dark">
-  <title>Restarting work on my website - My Blog</title>
-  <link rel="stylesheet" href="/styles/main.css">
-  <link rel="manifest" href="/manifest.json">
-  <link rel="apple-touch-icon" href="/icons/icon-192.png">
-  <meta name="theme-color" content="#0066cc">
-  <script>
-    // Apply theme immediately to prevent flash
-    (function() {
-      const savedTheme = localStorage.getItem('site-theme')
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="color-scheme" content="light dark" />
+		<title>Restarting work on my website - My Blog</title>
+		<link rel="stylesheet" href="/styles/main.css" />
+		<link rel="manifest" href="/manifest.json" />
+		<link rel="apple-touch-icon" href="/icons/icon-192.png" />
+		<meta name="theme-color" content="#0066cc" />
+		<script>
+			// Apply theme immediately to prevent flash
+			;(function () {
+				const savedTheme = localStorage.getItem('site-theme')
 
-      // Handle the three modes: 'light', 'dark', or 'system'
-      if (savedTheme === 'light') {
-        document.documentElement.classList.add('light-theme')
-      } else if (savedTheme === 'dark') {
-        document.documentElement.classList.add('dark-theme')
-      }
-      // If savedTheme is 'system' or null, don't add any class
-      // CSS will use the prefers-color-scheme media query
-    })()
-  </script>
-</head>
-<body>
-  <header class="site-header">
-    <nav class="site-nav">
-      <a href="/" class="nav-link">Home</a>
-      <a href="/apps.html" class="nav-link">Apps</a>
-      <a href="/about.html" class="nav-link">About</a>
-      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
-        <span class="theme-icon">◐</span>
-      </button>
-    </nav>
-  </header>
+				// Handle the three modes: 'light', 'dark', or 'system'
+				if (savedTheme === 'light') {
+					document.documentElement.classList.add('light-theme')
+				} else if (savedTheme === 'dark') {
+					document.documentElement.classList.add('dark-theme')
+				}
+				// If savedTheme is 'system' or null, don't add any class
+				// CSS will use the prefers-color-scheme media query
+			})()
+		</script>
+	</head>
 
-  <main class="site-main">
-    <article class="article">
-  <header class="article-header">
-    <h1 class="article-title">Restarting work on my website</h1>
-    <time class="article-date" datetime="2026-04-03">2026-04-03</time>
-  </header>
-  <div class="article-content">
-    <h1>Restarting work on my website</h1>
+	<body>
+		<header class="site-header">
+			<nav class="site-nav">
+				<a href="/" class="nav-link">Home</a>
+				<a href="/apps.html" class="nav-link">Apps</a>
+				<a href="/about.html" class="nav-link">About</a>
+				<button
+					id="theme-toggle"
+					class="theme-toggle"
+					aria-label="Toggle theme"
+				>
+					<span class="theme-icon">◐</span>
+				</button>
+			</nav>
+		</header>
+
+		<main class="site-main"><article class="article">
+	<header class="article-header">
+		<h1 class="article-title">Restarting work on my website</h1>
+		<time class="article-date" datetime="2026-04-03">2026-04-03</time>
+	</header>
+	<div class="article-content"><h1>Restarting work on my website</h1>
 <p>I&#39;d like this to be a website with articles, and then also have various apps under <a href="/apps.html">/apps</a>, which can be installed and used offline</p>
-
-  </div>
+</div>
 </article>
+</main>
 
-  </main>
+		<script src="/scripts/theme.js"></script>
+		<script src="/installServiceWorker.js"></script>
 
-  <script src="/scripts/theme.js"></script>
-    <script>
-     if ('serviceWorker' in navigator) {
-       navigator.serviceWorker.register('/service-worker.js')
-          .then(function(registration) {
-           console.log('Service Worker registered with scope:', registration.scope)
-          })
-          .catch(function(error) {
-           console.log('Service Worker registration failed:', error)
-          })
-      }
-    </script>
-
- <footer class="site-footer">
-    <p>Built at 2026-04-05T02:48:50.446Z</p>
- </footer>
- </body>
+		<footer class="site-footer">
+			<p>Built at 2026-04-07T08:52:09.357Z</p>
+		</footer>
+	</body>
 </html>

@@ -1,5 +1,5 @@
 // Theme switcher with light, dark, and system options
-(function () {
+;(function () {
 	const THEME_KEY = 'site-theme'
 	const themeToggle = document.getElementById('theme-toggle')
 
@@ -19,7 +19,7 @@
 			} else if (mode === 'dark') {
 				icon.textContent = '🌙'
 			} else {
-				icon.textContent = '🌗'// ⚙️💻🖥️🤖📱
+				icon.textContent = '🌗' // ⚙️💻🖥️🤖📱
 			}
 		}
 	}
@@ -33,7 +33,10 @@
 			document.documentElement.classList.add('dark-theme')
 		} else {
 			// System mode - force check what browser actually reports
-			if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+			if (
+				window.matchMedia &&
+				window.matchMedia('(prefers-color-scheme: dark)').matches
+			) {
 				document.documentElement.classList.add('dark-theme')
 			} else {
 				document.documentElement.classList.add('light-theme')
@@ -64,12 +67,14 @@
 
 	// Listen for OS theme changes (only applies when in system mode)
 	if (window.matchMedia) {
-		window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
-			if (getSavedThemeMode() === 'system') {
-				// Re-apply system theme to trigger any visual updates
-				applyTheme('system')
-			}
-		})
+		window
+			.matchMedia('(prefers-color-scheme: dark)')
+			.addEventListener('change', function () {
+				if (getSavedThemeMode() === 'system') {
+					// Re-apply system theme to trigger any visual updates
+					applyTheme('system')
+				}
+			})
 	}
 
 	if (themeToggle) {
