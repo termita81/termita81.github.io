@@ -1,4 +1,4 @@
-const SITE_CACHE_NAME = 'termita81-site-v1'
+const SITE_CACHE_NAME = 'site-v1'
 const APPS_CACHE_NAME = 'apps-cache-v1'
 
 const urlsToCache = [
@@ -17,18 +17,21 @@ const APP_INDEX_STORE = 'appIndex'
 
 function openMetadataDB() {
 	return new Promise((resolve, reject) => {
-		const request = indexedDB.open('termita81-apps', 1)
+		const request = indexedDB.open('apps', 1)
 
 		request.onerror = () => reject(request.error)
 		request.onsuccess = () => resolve(request.result)
 
-		request.onupgradeneeded = (event) => {
+		request.onupgradeneeded = event => {
 			const db = event.target.result
 			if (!db.objectStoreNames.contains(APP_METADATA_STORE)) {
 				db.createObjectStore(APP_METADATA_STORE, { keyPath: 'appName' })
 			}
 			if (!db.objectStoreNames.contains(APP_INDEX_STORE)) {
-				db.createObjectStore(APP_INDEX_STORE, { keyPath: 'appName', autoIncrement: false })
+				db.createObjectStore(APP_INDEX_STORE, {
+					keyPath: 'appName',
+					autoIncrement: false
+				})
 			}
 		}
 	})
@@ -81,7 +84,11 @@ async function _setInstalledVersion(appName, version) {
 		const tx = db.transaction(APP_METADATA_STORE, 'readwrite')
 		const store = tx.objectStore(APP_METADATA_STORE)
 		await new Promise((resolve, reject) => {
-			const req = store.put({ appName, version, installedAt: new Date().toISOString() })
+			const req = store.put({
+				appName,
+				version,
+				installedAt: new Date().toISOString()
+			})
 			req.onsuccess = () => resolve()
 			req.onerror = () => reject(req.error)
 		})
@@ -113,13 +120,12 @@ async function clearInstalledVersion(appName) {
 
 self.addEventListener('install', function (event) {
 	event.waitUntil(
-		caches.open(SITE_CACHE_NAME)
-			.then(function (cache) {
-				return cache.addAll(urlsToCache).catch(function (error) {
-					console.error('Failed to cache resources during install:', error)
-					throw error
-				})
+		caches.open(SITE_CACHE_NAME).then(function (cache) {
+			return cache.addAll(urlsToCache).catch(function (error) {
+				console.error('Failed to cache resources during install:', error)
+				throw error
 			})
+		})
 	)
 	self.skipWaiting()
 })
@@ -128,12 +134,15 @@ self.addEventListener('message', async function (event) {
 	if (event.data && event.data.type === 'CHECK_VERSIONS') {
 		fetch('/apps/versions.json')
 			.then(response => response.json())
-			.then(async (versions) => {
+			.then(async versions => {
 				const installedApps = await getInstalledApps()
 				const updates = {}
 				Object.keys(versions).forEach(appName => {
 					const installedVersion = installedApps[appName]
-					if (installedVersion && newerThan(versions[appName].latestVersion, installedVersion)) {
+					if (
+						installedVersion &&
+						newerThan(versions[appName].latestVersion, installedVersion)
+					) {
 						updates[appName] = versions[appName].latestVersion
 					}
 				})
@@ -154,7 +163,9 @@ self.addEventListener('message', async function (event) {
 		return
 	}
 
-	if (!event.data || !event.ports[0]) {return}
+	if (!event.data || !event.ports[0]) {
+		return
+	}
 
 	if (event.data.type === 'INSTALL_APP') {
 		const appName = event.data.appName
@@ -163,14 +174,27 @@ self.addEventListener('message', async function (event) {
 			installAndStore(appName, version)
 				.then(success => {
 					if (success) {
-						event.ports[0].postMessage({ success: true, type: 'INSTALL_COMPLETE', appName: appName })
+						event.ports[0].postMessage({
+							success: true,
+							type: 'INSTALL_COMPLETE',
+							appName: appName
+						})
 					} else {
-						event.ports[0].postMessage({ success: false, type: 'INSTALL_ERROR', appName: appName })
+						event.ports[0].postMessage({
+							success: false,
+							type: 'INSTALL_ERROR',
+							appName: appName
+						})
 					}
 				})
 				.catch(error => {
 					console.error('Install failed:', error)
-					event.ports[0].postMessage({ success: false, type: 'INSTALL_ERROR', appName: appName, error: error.message })
+					event.ports[0].postMessage({
+						success: false,
+						type: 'INSTALL_ERROR',
+						appName: appName,
+						error: error.message
+					})
 				})
 		)
 	}
@@ -180,11 +204,20 @@ self.addEventListener('message', async function (event) {
 		event.waitUntil(
 			uninstallApp(appName)
 				.then(() => {
-					event.ports[0].postMessage({ success: true, type: 'UNINSTALL_COMPLETE', appName: appName })
+					event.ports[0].postMessage({
+						success: true,
+						type: 'UNINSTALL_COMPLETE',
+						appName: appName
+					})
 				})
 				.catch(error => {
 					console.error('Uninstall failed:', error)
-					event.ports[0].postMessage({ success: false, type: 'UNINSTALL_ERROR', appName: appName, error: error.message })
+					event.ports[0].postMessage({
+						success: false,
+						type: 'UNINSTALL_ERROR',
+						appName: appName,
+						error: error.message
+					})
 				})
 		)
 	}
@@ -197,21 +230,43 @@ self.addEventListener('message', async function (event) {
 			updateApp(appName, newVersion, oldVersion)
 				.then(success => {
 					if (success) {
-						event.ports[0].postMessage({ success: true, type: 'UPDATE_COMPLETE', appName: appName })
+						event.ports[0].postMessage({
+							success: true,
+							type: 'UPDATE_COMPLETE',
+							appName: appName
+						})
 					} else {
-						event.ports[0].postMessage({ success: false, type: 'UPDATE_ERROR', appName: appName })
+						event.ports[0].postMessage({
+							success: false,
+							type: 'UPDATE_ERROR',
+							appName: appName
+						})
 					}
 				})
 				.catch(error => {
 					console.error('Update failed:', error)
-					event.ports[0].postMessage({ success: false, type: 'UPDATE_ERROR', appName: appName, error: error.message })
+					event.ports[0].postMessage({
+						success: false,
+						type: 'UPDATE_ERROR',
+						appName: appName,
+						error: error.message
+					})
 				})
 		)
 	}
 })
 
 function newerThan(a, b) {
-	return a.split('_').map(n => parseInt(n)).join('.') > b.split('_').map(n => parseInt(n)).join('.')
+	return (
+		a
+			.split('_')
+			.map(n => parseInt(n))
+			.join('.') >
+		b
+			.split('_')
+			.map(n => parseInt(n))
+			.join('.')
+	)
 }
 
 async function installAndStore(appName, version) {
@@ -219,22 +274,26 @@ async function installAndStore(appName, version) {
 		const db = await openMetadataDB()
 		const tx = db.transaction(APP_METADATA_STORE, 'readwrite')
 		const store = tx.objectStore(APP_METADATA_STORE)
-		
+
 		await new Promise((resolve, reject) => {
-			const req = store.put({ appName, version, installedAt: new Date().toISOString() })
+			const req = store.put({
+				appName,
+				version,
+				installedAt: new Date().toISOString()
+			})
 			req.onsuccess = () => resolve()
 			req.onerror = () => reject(req.error)
 		})
-		
+
 		const cache = await caches.open(APPS_CACHE_NAME)
 		const appUrl = `/apps/${appName}/index.html`
 		const response = await fetch(appUrl)
-		
+
 		if (!response || response.status !== 200) {
 			await store.delete(appName)
 			return false
 		}
-		
+
 		await cache.put(appUrl, response.clone())
 		await db.close()
 		console.log(`Installed ${appName} ${version}`)
@@ -249,27 +308,33 @@ async function updateApp(appName, newVersion, oldVersion) {
 	try {
 		const cache = await caches.open(APPS_CACHE_NAME)
 		const appUrl = `/apps/${appName}/index.html`
-		
+
 		const keys = await cache.keys()
-		keys.filter(key => key.url.includes(appName)).forEach(key => cache.delete(key))
-		
+		keys
+			.filter(key => key.url.includes(appName))
+			.forEach(key => cache.delete(key))
+
 		const response = await fetch(appUrl)
 		if (!response || response.status !== 200) {
 			return false
 		}
-		
+
 		await cache.put(appUrl, response.clone())
-		
+
 		const db = await openMetadataDB()
 		const tx = db.transaction(APP_METADATA_STORE, 'readwrite')
 		const store = tx.objectStore(APP_METADATA_STORE)
-		
+
 		await new Promise((resolve, reject) => {
-			const req = store.put({ appName, version: newVersion, installedAt: new Date().toISOString() })
+			const req = store.put({
+				appName,
+				version: newVersion,
+				installedAt: new Date().toISOString()
+			})
 			req.onsuccess = () => resolve()
 			req.onerror = () => reject(req.error)
 		})
-		
+
 		await db.close()
 		console.log(`Updated ${appName} from ${oldVersion} to ${newVersion}`)
 		return true
@@ -283,8 +348,12 @@ async function uninstallApp(appName) {
 	try {
 		const cache = await caches.open(APPS_CACHE_NAME)
 		const keys = await cache.keys()
-		await Promise.all(keys.filter(key => key.url.includes(appName)).map(key => cache.delete(key)))
-		
+		await Promise.all(
+			keys
+				.filter(key => key.url.includes(appName))
+				.map(key => cache.delete(key))
+		)
+
 		await clearInstalledVersion(appName)
 		console.log(`Uninstalled ${appName}`)
 		return true
