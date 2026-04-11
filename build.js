@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+const crypto = require('crypto')
 const { marked } = require('marked')
 
 const SRC_DIR = './src'
@@ -10,12 +11,10 @@ const TEMPLATES_DIR = path.join(SRC_DIR, 'templates')
 
 const buildDate = new Date().toISOString()
 
-// Ensure output directories exist
 if (!fs.existsSync(DOCS_DIR)) fs.mkdirSync(DOCS_DIR, { recursive: true })
 if (!fs.existsSync(ARTICLES_DEST))
 	fs.mkdirSync(ARTICLES_DEST, { recursive: true })
 
-// Read templates
 const defaultTemplate = fs.readFileSync(
 	path.join(TEMPLATES_DIR, 'default.html'),
 	'utf8'
@@ -29,14 +28,91 @@ const homeTemplate = fs.readFileSync(
 	'utf8'
 )
 
-// Helper function to extract title from markdown
-function extractTitle(content) {
+// buildVersions() runs first and sets this
+let siteVersion = ''
+
+function versionTimestamp() {
+	const d = new Date()
+	const pad = n => String(n).padStart(2, '0')
+	return `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}-${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}`
+}
+
+function hashFiles(filePaths) {
+	const hash = crypto.createHash('sha256')
+	filePaths.sort().forEach(fp => {
+		hash.update(fp)
+		hash.update(fs.readFileSync(fp))
+	})
+	return hash.digest('hex').slice(0, 8)
+}
+
+function collectFiles(dir, exts) {
+	if (!fs.existsSync(dir)) return []
+	return fs.readdirSync(dir)
+		.filter(f => !exts || exts.some(e => f.endsWith(e)))
+		.map(f => path.join(dir, f))
+		.filter(fp => fs.statSync(fp).isFile())
+}
+
+function buildVersions() {
+	const versionsPath = path.join(SRC_DIR, 'versions.json')
+	const versions = JSON.parse(fs.readFileSync(versionsPath, 'utf8'))
+
+	// Site hash — excludes SW files, manifest, and versions.json itself
+	const siteFiles = [
+		...collectFiles(path.join(SRC_DIR, 'articles'), ['.md']),
+		...collectFiles(path.join(SRC_DIR, 'styles')),
+		...collectFiles(path.join(SRC_DIR, 'scripts')),
+		...collectFiles(path.join(SRC_DIR, 'templates')),
+		...collectFiles(path.join(SRC_DIR, 'icons')),
+		path.join(SRC_DIR, 'about.html'),
+		path.join(SRC_DIR, 'apps.html'),
+	].filter(fp => fs.existsSync(fp))
+
+	const siteHash = hashFiles(siteFiles)
+	if (siteHash !== versions.site?.hash) {
+		versions.site = { version: versionTimestamp(), hash: siteHash, build: buildDate }
+		console.log(`✓ Site version bumped → ${versions.site.version}`)
+	} else {
+		console.log(`✓ Site unchanged (${versions.site.version})`)
+	}
+
+	// Per-app hashes
+	const appsSrc = path.join(SRC_DIR, 'apps')
+	fs.readdirSync(appsSrc)
+		.filter(d => fs.statSync(path.join(appsSrc, d)).isDirectory())
+		.forEach(appName => {
+			const appFiles = collectFiles(path.join(appsSrc, appName))
+			const appHash = hashFiles(appFiles)
+			const prev = versions[appName]
+			if (appHash !== prev?.hash) {
+				const size = appFiles.reduce((s, fp) => s + fs.statSync(fp).size, 0)
+				versions[appName] = { version: versionTimestamp(), hash: appHash, build: buildDate, size }
+				console.log(`✓ App "${appName}" bumped → ${versions[appName].version}`)
+			} else {
+				console.log(`✓ App "${appName}" unchanged (${prev.version})`)
+			}
+		})
+
+	// Write back to src (source of truth)
+	fs.writeFileSync(versionsPath, JSON.stringify(versions, null, 2))
+
+	// Write to docs output (what the SW fetches at /apps/versions.json)
+	const dest = path.join(DOCS_DIR, 'apps', 'versions.json')
+	if (!fs.existsSync(path.dirname(dest))) fs.mkdirSync(path.dirname(dest), { recursive: true })
+	fs.writeFileSync(dest, JSON.stringify(versions, null, 2))
+
+	console.log(`✓ Versions written`)
+
+	return versions
+}
+
+function extractTitleFromMarkdown(content) {
 	const match = content.match(/^#\s+(.+)$/m)
 	return match ? match[1] : 'Untitled'
 }
 
-// Helper function to parse article filename
-function parseFilename(filename) {
+function parseArticleFilename(filename) {
 	const match = filename.match(/^(\d{4}-\d{2}-\d{2})-(.+)\.md$/)
 	if (match) {
 		return {
@@ -50,7 +126,7 @@ function parseFilename(filename) {
 
 function getArticles() {
 	function processFile(file) {
-		const parsed = parseFilename(file)
+		const parsed = parseArticleFilename(file)
 		if (!parsed) {
 			console.warn(
 				`Skipping ${file} - invalid filename format (expected YYYY-MM-DD-title.md)`
@@ -59,7 +135,7 @@ function getArticles() {
 		}
 
 		const content = fs.readFileSync(path.join(ARTICLES_SRC, file), 'utf8')
-		const title = extractTitle(content)
+		const title = extractTitleFromMarkdown(content)
 		const html = marked.parse(content)
 		const outputFile = `${parsed.date}-${parsed.slug}.html`
 
@@ -74,6 +150,7 @@ function getArticles() {
 			.replace('{{title}}', title)
 			.replace('{{content}}', articleHtml)
 			.replace('{{build-date}}', buildDate)
+			.replaceAll('{{site-version}}', siteVersion)
 
 		fs.writeFileSync(path.join(ARTICLES_DEST, outputFile), finalHtml)
 
@@ -123,6 +200,7 @@ function buildHomePage(articleListHtml) {
 		.replace('{{title}}', 'Home')
 		.replace('{{content}}', homeHtml)
 		.replace('{{build-date}}', buildDate)
+		.replaceAll('{{site-version}}', siteVersion)
 
 	fs.writeFileSync(path.join(DOCS_DIR, 'index.html'), finalHomeHtml)
 
@@ -136,6 +214,7 @@ function buildAboutPage() {
 		.replace('{{title}}', 'About')
 		.replace('{{content}}', aboutContent)
 		.replace('{{build-date}}', buildDate)
+		.replaceAll('{{site-version}}', siteVersion)
 	fs.writeFileSync(path.join(DOCS_DIR, 'about.html'), finalAboutHtml)
 
 	console.log(`✓ Generated about page`)
@@ -160,48 +239,28 @@ function copyStyles() {
 }
 
 function copyScripts() {
-	// Copy scripts
 	const scriptsSrc = path.join(SRC_DIR, 'scripts')
 	const scriptsDest = path.join(DOCS_DIR, 'scripts')
 	copyFiles(scriptsSrc, scriptsDest)
 }
 
-function updateManifestBuildTimestamp() {
-	// Update manifest build timestamp
-	const manifestSrc = path.join(SRC_DIR, 'manifest.json')
-	if (!fs.existsSync(manifestSrc)) return
-
-	let manifest = JSON.parse(fs.readFileSync(manifestSrc, 'utf8'))
-	manifest.build = new Date().toISOString()
-	fs.writeFileSync(
-		path.join(DOCS_DIR, 'manifest.json'),
-		JSON.stringify(manifest, null, 2)
-	)
+function buildServiceWorker() {
+	const files = ['serviceWorker.js', 'installServiceWorker.js']
+	files.forEach(f => {
+		const src = path.join(SRC_DIR, f)
+		if (!fs.existsSync(src)) { console.error(`Missing: ${f}`); return }
+		fs.copyFileSync(src, path.join(DOCS_DIR, f))
+	})
+	console.log('✓ Copied service worker')
 }
 
-function buildServiceWorker() {
-	// Copy service worker with updated cache name
-	let source = path.join(SRC_DIR, 'serviceWorker.js')
-	if (!fs.existsSync(source)) {
-		console.error('No service worker script found')
-		return
-	}
-
-	let content = fs.readFileSync(source, 'utf8')
-	content = content.replace(
-		/const SITE_CACHE_NAME = '.*'/g,
-		`const SITE_CACHE_NAME = 'site-${new Date().toISOString()}'`
-	)
-	fs.writeFileSync(path.join(DOCS_DIR, 'serviceWorker.js'), content)
-
-	// Copy installServiceWorker
-	source = path.join(SRC_DIR, 'installServiceWorker.js')
-	if (!fs.existsSync(source)) {
-		console.error('No service worker installer script found')
-		return
-	}
-	content = fs.readFileSync(source, 'utf8')
-	fs.writeFileSync(path.join(DOCS_DIR, 'installServiceWorker.js'), content)
+function updateManifest(version) {
+	const src = path.join(SRC_DIR, 'manifest.json')
+	if (!fs.existsSync(src)) return
+	const manifest = JSON.parse(fs.readFileSync(src, 'utf8'))
+	manifest.version = version
+	manifest.build = buildDate
+	fs.writeFileSync(path.join(DOCS_DIR, 'manifest.json'), JSON.stringify(manifest, null, 2))
 }
 
 function copyIcons() {
@@ -224,6 +283,7 @@ function buildAppsPage() {
 		.replace('{{title}}', 'Apps')
 		.replace('{{content}}', appsContent)
 		.replace('{{build-date}}', buildDate)
+		.replaceAll('{{site-version}}', siteVersion)
 	fs.writeFileSync(path.join(DOCS_DIR, 'apps.html'), finalAppsHtml)
 
 	// Copy apps directories
@@ -244,67 +304,10 @@ function buildAppsPage() {
 	})
 
 	console.log(`✓ Copied apps`)
-
-	// Generate versions.json with build timestamps from apps directory
-	const versionSrc = path.join(SRC_DIR, 'apps', 'versions.json')
-	const versionDest = path.join(DOCS_DIR, 'apps', 'versions.json')
-
-	let versions = {}
-	if (fs.existsSync(versionSrc)) {
-		try {
-			versions = JSON.parse(fs.readFileSync(versionSrc, 'utf8'))
-		} catch (e) {
-			versions = {}
-		}
-	}
-
-	const buildTimestamp = new Date().toISOString()
-
-	fs.readdirSync(appsSrc)
-		.filter(d => {
-			const dir = path.join(appsSrc, d)
-			return fs.statSync(dir).isDirectory()
-		})
-		.forEach(appDir => {
-			const appPath = path.join(appsSrc, appDir)
-
-			let totalSize = 0
-			function countDir(dirPath) {
-				fs.readdirSync(dirPath).forEach(file => {
-					const filePath = path.join(dirPath, file)
-					if (fs.statSync(filePath).isDirectory()) {
-						countDir(filePath)
-					} else {
-						totalSize += fs.statSync(filePath).size
-					}
-				})
-			}
-
-			countDir(appPath)
-
-			if (!versions[appDir]) {
-				versions[appDir] = {
-					latestVersion: 'unknown',
-					build: buildTimestamp,
-					latestSize: totalSize
-				}
-			} else {
-				versions[appDir].build = buildTimestamp
-				versions[appDir].latestSize = totalSize
-			}
-		})
-
-	console.log(`✓ Generated versions.json`)
-	Object.entries(versions)
-		.sort((a, b) => a[0].localeCompare(b[0]))
-		.forEach(([name, info]) => {
-			console.log(
-				`    - ${name}: ${info.latestSize} bytes (${info.latestVersion}) [build: ${info.build}]`
-			)
-		})
-
-	fs.writeFileSync(versionDest, JSON.stringify(versions, null, 2))
 }
+
+const versions = buildVersions()
+siteVersion = versions.site.version
 
 const articles = getArticles()
 const articleListHtml = getArticlesHtml(articles)
@@ -315,8 +318,8 @@ buildAboutPage()
 copyStyles()
 copyScripts()
 
-updateManifestBuildTimestamp()
 buildServiceWorker()
+updateManifest(siteVersion)
 
 copyIcons()
 

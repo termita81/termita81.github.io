@@ -1,9 +1,9 @@
 {
-  "build": "2026-04-07T09:29:01.322Z",
+  "build": "2026-04-11T06:47:18.356Z",
   "id": "/",
   "name": "Raz's Stuff",
   "short_name": "Raz's Stuff",
-  "description": "Personal blog by termita81",
+  "description": "Personal blog by Razvan Popa",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -40,5 +40,6 @@
       "type": "image/png",
       "purpose": "maskable"
     }
-  ]
+  ],
+  "version": "20260411-0627"
 }

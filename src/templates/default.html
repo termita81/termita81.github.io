@@ -5,7 +5,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="color-scheme" content="light dark" />
 		<title>{{title}} - My Blog</title>
-		<link rel="stylesheet" href="/styles/main.css" />
+		<link rel="stylesheet" href="/styles/main.css?v={{site-version}}" />
 		<link rel="manifest" href="/manifest.json" />
 		<link rel="apple-touch-icon" href="/icons/icon-192.png" />
 		<meta name="theme-color" content="#0066cc" />
@@ -24,9 +24,6 @@
 				// CSS will use the prefers-color-scheme media query
 			})()
 		</script>
-
-		<!-- analytics -->
-		<script src="https://www.glancelytics.com/js/cmnof1v570001l504gromd0rx" data-domain="razvanpopa.name" defer></script>
 	</head>
 
 	<body>
@@ -47,7 +44,7 @@
 
 		<main class="site-main">{{content}}</main>
 
-		<script src="/scripts/theme.js"></script>
+		<script src="/scripts/theme.js?v={{site-version}}"></script>
 		<script src="/installServiceWorker.js"></script>
 
 		<footer class="site-footer">

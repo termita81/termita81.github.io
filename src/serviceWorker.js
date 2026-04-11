@@ -1,16 +1,4 @@
-const SITE_CACHE_NAME = 'site-v1'
 const APPS_CACHE_NAME = 'apps-cache-v1'
-
-const urlsToCache = [
-	'/',
-	'/index.html',
-	'/about.html',
-	'/styles/main.css',
-	'/scripts/theme.js',
-	'/manifest.json',
-	'/icons/icon-192.png',
-	'/icons/icon-512.png'
-]
 
 const APP_METADATA_STORE = 'appMetadata'
 const APP_INDEX_STORE = 'appIndex'
@@ -60,46 +48,6 @@ async function getInstalledApps() {
 	}
 }
 
-async function _getInstalledVersion(appName) {
-	try {
-		const db = await openMetadataDB()
-		const tx = db.transaction(APP_METADATA_STORE, 'readonly')
-		const store = tx.objectStore(APP_METADATA_STORE)
-		const result = await new Promise((resolve, reject) => {
-			const req = store.get(appName)
-			req.onsuccess = () => resolve(req.result)
-			req.onerror = () => reject(req.error)
-		})
-		await db.close()
-		return result ? result.version : null
-	} catch (error) {
-		console.error(`Failed to get version for ${appName}:`, error)
-		return null
-	}
-}
-
-async function _setInstalledVersion(appName, version) {
-	try {
-		const db = await openMetadataDB()
-		const tx = db.transaction(APP_METADATA_STORE, 'readwrite')
-		const store = tx.objectStore(APP_METADATA_STORE)
-		await new Promise((resolve, reject) => {
-			const req = store.put({
-				appName,
-				version,
-				installedAt: new Date().toISOString()
-			})
-			req.onsuccess = () => resolve()
-			req.onerror = () => reject(req.error)
-		})
-		await db.close()
-		return true
-	} catch (error) {
-		console.error(`Failed to set version for ${appName}:`, error)
-		return false
-	}
-}
-
 async function clearInstalledVersion(appName) {
 	try {
 		const db = await openMetadataDB()
@@ -118,18 +66,6 @@ async function clearInstalledVersion(appName) {
 	}
 }
 
-self.addEventListener('install', function (event) {
-	event.waitUntil(
-		caches.open(SITE_CACHE_NAME).then(function (cache) {
-			return cache.addAll(urlsToCache).catch(function (error) {
-				console.error('Failed to cache resources during install:', error)
-				throw error
-			})
-		})
-	)
-	self.skipWaiting()
-})
-
 self.addEventListener('message', async function (event) {
 	if (event.data && event.data.type === 'CHECK_VERSIONS') {
 		fetch('/apps/versions.json')
@@ -138,16 +74,17 @@ self.addEventListener('message', async function (event) {
 				const installedApps = await getInstalledApps()
 				const updates = {}
 				Object.keys(versions).forEach(appName => {
+					if (appName === 'site') return
 					const installedVersion = installedApps[appName]
 					if (
 						installedVersion &&
-						newerThan(versions[appName].latestVersion, installedVersion)
+						versions[appName].version > installedVersion
 					) {
-						updates[appName] = versions[appName].latestVersion
+						updates[appName] = versions[appName].version
 					}
 				})
 
-				const clients = await clients.matchAll({ type: 'window' })
+				const clients = await self.clients.matchAll({ type: 'window' })
 				clients.forEach(client => {
 					client.postMessage({ type: 'APPS_UPDATED', updates: updates })
 				})
@@ -256,19 +193,6 @@ self.addEventListener('message', async function (event) {
 	}
 })
 
-function newerThan(a, b) {
-	return (
-		a
-			.split('_')
-			.map(n => parseInt(n))
-			.join('.') >
-		b
-			.split('_')
-			.map(n => parseInt(n))
-			.join('.')
-	)
-}
-
 async function installAndStore(appName, version) {
 	try {
 		const db = await openMetadataDB()
@@ -364,7 +288,7 @@ async function uninstallApp(appName) {
 }
 
 self.addEventListener('activate', function (event) {
-	const cacheWhitelist = [SITE_CACHE_NAME, APPS_CACHE_NAME]
+	const cacheWhitelist = [APPS_CACHE_NAME]
 	event.waitUntil(
 		caches.keys().then(function (cacheNames) {
 			return Promise.all(

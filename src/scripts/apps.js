@@ -3,19 +3,6 @@
 	let latestVersions = {}
 	let appStates = {}
 
-	function newerThan(a, b) {
-		return (
-			a
-				.split('_')
-				.map(n => parseInt(n))
-				.join('.') >
-			b
-				.split('_')
-				.map(n => parseInt(n))
-				.join('.')
-		)
-	}
-
 	function renderApp(name, info) {
 		const container = document.getElementById('apps-container')
 		const existing = container.querySelector(`[data-app="${name}"]`)
@@ -26,7 +13,7 @@
 		}
 
 		const hasUpdate =
-			installedVersion && newerThan(info.latestVersion, installedVersion)
+			installedVersion && info.version > installedVersion
 
 		const isInstalled = !!installedVersion
 		const state = isInstalled
@@ -48,17 +35,17 @@
 			<div class="app-info">
 				<h2><a href="/apps/${name}/index.html">${name.charAt(0).toUpperCase() + name.slice(1)}</a></h2>
 				<p class="version">${installedVersion ? 'v' + installedVersion : 'Not installed'}</p>
-				<p class="size">${info.latestSize} bytes</p>
+				<p class="size">${info.size} bytes</p>
 			</div>
 			<div class="app-actions">
 				<button class="app-btn" data-action="${!isInstalled ? 'install' : hasUpdate ? 'update' : 'uninstall'}" data-app="${name}">
-					${!isInstalled ? 'Install' : hasUpdate ? 'Update to ' + info.latestVersion : 'Uninstall'}
+					${!isInstalled ? 'Install' : hasUpdate ? 'Update to ' + info.version : 'Uninstall'}
 				</button>
 				${
 					hasUpdate
 						? `
-				<button class="app-btn update-btn" data-action="update" data-app="${name}" data-version="${info.latestVersion}">
-					Update to ${info.latestVersion}
+				<button class="app-btn update-btn" data-action="update" data-app="${name}" data-version="${info.version}">
+					Update to ${info.version}
 				</button>
 				`
 						: ''
@@ -304,7 +291,8 @@
 	fetch('/apps/versions.json')
 		.then(response => response.json())
 		.then(versions => {
-			latestVersions = versions
+			const { site: _, ...appVersions } = versions
+			latestVersions = appVersions
 			return loadInstalledApps()
 		})
 		.then(() => {

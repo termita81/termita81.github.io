@@ -4,7 +4,8 @@
 	"description": "Served from the repo's /docs directory",
 	"main": "index.js",
 	"scripts": {
-		"build": "node build.js",
+		"build": "node build.js && echo \"localhost:443 {\n\tfile_server browse\n}\" > docs/Caddyfile",
+		"clean": "rm -rf docs",
 		"lint": "eslint src/",
 		"lint:fix": "eslint src/ --fix",
 		"format": "prettier \"**/*.{js,html,css,md,json,yaml,yml}\" --write",
