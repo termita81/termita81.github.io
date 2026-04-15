@@ -244,6 +244,18 @@ function copyScripts() {
 	copyFiles(scriptsSrc, scriptsDest)
 }
 
+function copyCFiles() {
+	let src = path.join(SRC_DIR, 'Caddyfile')
+	let dst = path.join(DOCS_DIR, 'Caddyfile')
+	console.log(`--- ${src}, ${dst}`)
+	fs.copyFileSync(src, dst)
+	
+	src = path.join(SRC_DIR, 'CNAME')
+	dst = path.join(DOCS_DIR, 'CNAME')
+	console.log(`--- ${src}, ${dst}`)
+	fs.copyFileSync(src, dst)
+}
+
 function buildServiceWorker() {
 	const files = ['serviceWorker.js', 'installServiceWorker.js']
 	files.forEach(f => {
@@ -317,6 +329,7 @@ buildAboutPage()
 
 copyStyles()
 copyScripts()
+copyCFiles()
 
 buildServiceWorker()
 updateManifest(siteVersion)

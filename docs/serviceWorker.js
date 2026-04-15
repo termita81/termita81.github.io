@@ -74,7 +74,9 @@ self.addEventListener('message', async function (event) {
 				const installedApps = await getInstalledApps()
 				const updates = {}
 				Object.keys(versions).forEach(appName => {
-					if (appName === 'site') return
+					if (appName === 'site') {
+						return
+					}
 					const installedVersion = installedApps[appName]
 					if (
 						installedVersion &&

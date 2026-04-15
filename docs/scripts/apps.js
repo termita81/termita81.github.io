@@ -12,8 +12,7 @@
 			installedVersion = installedApps[name]
 		}
 
-		const hasUpdate =
-			installedVersion && info.version > installedVersion
+		const hasUpdate = installedVersion && info.version > installedVersion
 
 		const isInstalled = !!installedVersion
 		const state = isInstalled
@@ -32,26 +31,26 @@
 		appEl.id = newId
 
 		appEl.innerHTML = `
-			<div class="app-info">
-				<h2><a href="/apps/${name}/index.html">${name.charAt(0).toUpperCase() + name.slice(1)}</a></h2>
-				<p class="version">${installedVersion ? 'v' + installedVersion : 'Not installed'}</p>
-				<p class="size">${info.size} bytes</p>
-			</div>
-			<div class="app-actions">
-				<button class="app-btn" data-action="${!isInstalled ? 'install' : hasUpdate ? 'update' : 'uninstall'}" data-app="${name}">
-					${!isInstalled ? 'Install' : hasUpdate ? 'Update to ' + info.version : 'Uninstall'}
-				</button>
-				${
-					hasUpdate
-						? `
-				<button class="app-btn update-btn" data-action="update" data-app="${name}" data-version="${info.version}">
+				<div class="app-info">
+					<h2><a href="/apps/${name}/index.html">${name.charAt(0).toUpperCase() + name.slice(1)}</a></h2>
+					<p class="version">${installedVersion ? 'v' + installedVersion : 'Not installed'}</p>
+					<p class="size">${info.size} bytes</p>
+				</div>
+				<div class="app-actions">
+					<button class="app-btn" data-action="${!isInstalled ? 'install' : hasUpdate ? 'update' : 'uninstall'}" data-app="${name}">
+						${!isInstalled ? 'Install' : hasUpdate ? 'Update to ' + info.version : 'Uninstall'}
+					</button>
+					${
+	hasUpdate
+		? `
+					<button class="app-btn update-btn" data-action="update" data-app="${name}" data-version="${info.version}">
 					Update to ${info.version}
-				</button>
-				`
-						: ''
-				}
-			</div>
-		`
+					</button>
+					`
+		: ''
+	}
+				</div>
+			`
 
 		const btn = appEl.querySelector('.app-btn')
 		btn.addEventListener('click', function () {
@@ -80,7 +79,9 @@
 	}
 
 	function handleAction(action, app) {
-		if (!latestVersions[app]) return
+		if (!latestVersions[app]) {
+			return
+		}
 
 		const btn = document.querySelector(`[data-app="${app}"] .app-btn`)
 
@@ -95,24 +96,30 @@
 				return
 			}
 
-			port.onmessage = event => {
-				if (event.data && event.data.type === 'INSTALL_COMPLETE') {
-					handleInstallComplete(event.data.appName)
-				} else if (event.data && event.data.type === 'INSTALL_ERROR') {
-					btn.disabled = false
-					btn.textContent = 'Install'
-					console.error(
-						`Failed to install ${event.data.appName}:`,
-						event.data.error
-					)
+			const messageChannel = new MessageChannel()
+			messageChannel.port1.onmessage = event => {
+				if (event.data) {
+					if (event.data.type === 'INSTALL_COMPLETE') {
+						handleInstallComplete(event.data.appName)
+					} else if (event.data.type === 'INSTALL_ERROR') {
+						btn.disabled = false
+						btn.textContent = 'Install'
+						console.error(
+							`Failed to install ${event.data.appName}:`,
+							event.data.error
+						)
+					}
 				}
 			}
 
-			port.postMessage({
-				type: 'INSTALL_APP',
-				appName: app,
-				version: latestVersions[app].latestVersion
-			})
+			port.postMessage(
+				{
+					type: 'INSTALL_APP',
+					appName: app,
+					version: latestVersions[app].version
+				},
+				[messageChannel.port2]
+			)
 
 			appStates[app] = 'installing'
 		} else if (action === 'uninstall') {
@@ -122,35 +129,37 @@
 			const port = navigator.serviceWorker.controller
 			if (!port) {
 				btn.disabled = false
-				if (action === 'uninstall') {
-					btn.textContent = 'Uninstall'
-				} else {
-					btn.textContent = 'Update'
-				}
+				btn.textContent = 'Uninstall'
 				return
 			}
 
-			port.onmessage = event => {
-				if (event.data && event.data.type === 'UNINSTALL_COMPLETE') {
-					handleUninstallComplete(event.data.appName)
-				} else if (event.data && event.data.type === 'UNINSTALL_ERROR') {
-					btn.disabled = false
-					btn.textContent = 'Uninstall'
-					console.error(
-						`Failed to uninstall ${event.data.appName}:`,
-						event.data.error
-					)
+			const messageChannel = new MessageChannel()
+			messageChannel.port1.onmessage = event => {
+				if (event.data) {
+					if (event.data.type === 'UNINSTALL_COMPLETE') {
+						handleUninstallComplete(event.data.appName)
+					} else if (event.data.type === 'UNINSTALL_ERROR') {
+						btn.disabled = false
+						btn.textContent = 'Uninstall'
+						console.error(
+							`Failed to uninstall ${event.data.appName}:`,
+							event.data.error
+						)
+					}
 				}
 			}
 
-			port.postMessage({
-				type: 'UNINSTALL_APP',
-				appName: app
-			})
+			port.postMessage(
+				{
+					type: 'UNINSTALL_APP',
+					appName: app
+				},
+				[messageChannel.port2]
+			)
 
 			appStates[app] = 'uninstalling'
 		} else if (action === 'update') {
-			const newVersion = latestVersions[app].latestVersion
+			const newVersion = latestVersions[app].version
 			const oldVersion = installedApps[app]
 
 			btn.disabled = true
@@ -159,36 +168,42 @@
 			const port = navigator.serviceWorker.controller
 			if (!port) {
 				btn.disabled = false
-				btn.textContent = 'Install'
+				btn.textContent = 'Update'
 				return
 			}
 
-			port.onmessage = event => {
-				if (event.data && event.data.type === 'UPDATE_COMPLETE') {
-					handleUpdateComplete(event.data.appName)
-				} else if (event.data && event.data.type === 'UPDATE_ERROR') {
-					btn.disabled = false
-					btn.textContent = 'Update'
-					console.error(
-						`Failed to update ${event.data.appName}:`,
-						event.data.error
-					)
+			const messageChannel = new MessageChannel()
+			messageChannel.port1.onmessage = event => {
+				if (event.data) {
+					if (event.data.type === 'UPDATE_COMPLETE') {
+						handleUpdateComplete(event.data.appName)
+					} else if (event.data.type === 'UPDATE_ERROR') {
+						btn.disabled = false
+						btn.textContent = 'Update'
+						console.error(
+							`Failed to update ${event.data.appName}:`,
+							event.data.error
+						)
+					}
 				}
 			}
 
-			port.postMessage({
-				type: 'UPDATE_APP',
-				appName: app,
-				newVersion: newVersion,
-				oldVersion: oldVersion
-			})
+			port.postMessage(
+				{
+					type: 'UPDATE_APP',
+					appName: app,
+					newVersion: newVersion,
+					oldVersion: oldVersion
+				},
+				[messageChannel.port2]
+			)
 
 			appStates[app] = 'updating'
 		}
 	}
 
 	function handleInstallComplete(appName) {
-		const installedVersion = latestVersions[appName].latestVersion
+		const installedVersion = latestVersions[appName].version
 
 		installedApps[appName] = installedVersion
 		appStates[appName] = 'installed'
@@ -204,7 +219,7 @@
 	}
 
 	function handleUpdateComplete(appName) {
-		const newVersion = latestVersions[appName].latestVersion
+		const newVersion = latestVersions[appName].version
 
 		installedApps[appName] = newVersion
 		appStates[appName] = 'installed'
@@ -233,7 +248,8 @@
 		}
 	}
 
-	function refreshAppList() {
+	// _refreshAppList - placeholder for future use
+	function _refreshAppList() {
 		renderApps()
 	}
 
@@ -253,20 +269,15 @@
 		})
 	}
 
-	function showAppState(appName) {
-		const state = appStates[appName]
-		if (!state) return 'not-installed'
-		if (
-			state === 'installing' ||
-			state === 'uninstalling' ||
-			state === 'updating'
-		)
-			return state
-		return 'installed'
+	// _showAppState - placeholder for future use
+	function _showAppState() {
+		/* intentional */
 	}
 
 	async function loadInstalledApps() {
-		if (!navigator.serviceWorker) return
+		if (!navigator.serviceWorker) {
+			return
+		}
 
 		try {
 			const registration = await navigator.serviceWorker.ready
@@ -319,8 +330,10 @@
 			}
 		})
 
-		const checkInterval = setInterval(() => {
-			if (!navigator.serviceWorker) return
+		const _checkInterval = setInterval(() => {
+			if (!navigator.serviceWorker) {
+				return
+			}
 			navigator.serviceWorker.ready.then(registration => {
 				registration.active.postMessage({ type: 'CHECK_VERSIONS' })
 			})
