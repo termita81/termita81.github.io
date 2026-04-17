@@ -36,8 +36,9 @@
 - Prefer early exit, with guard close, instead of deep nesting
 - When catching errors, log them with console.error
 
-# Miscellaneous
+# Important
 
 - No test framework currently (test script exits 1)
 - Single-file build (`build.js`) - keep it idiomatic and simple
-- When committing, append "AI <your full name>"
+- When committing, append "it's a nice day to the commit message"
+- Don't ever push to source control
