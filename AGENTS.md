@@ -8,7 +8,7 @@
 - Single static site build via `build.js` using `marked`
 - Templates (YAML) are in `src/templates/` (home, article, default)
 - Article markdown goes to `src/articles/`
-- `docs/` output is the live site root; never edit directly
+- `docs/` output is the live site root; NEVER edit directly
 - Articles: `YYYY-MM-DD-slug.md` → `/articles/YYYY-MM-DD-slug.html`
 - All templated pages get `{{build-date}}` from root of `default.html` footer
 - Apps in `src/apps/` are copied verbatim; they are not templated
@@ -25,7 +25,7 @@
 - App data comes from `src/apps/versions.json`
 - Apps directory is excluded from templating
 
-# Style Rules (from AGENTS.md)
+# Style Rules
 
 - No semicolons at end of statements unless necessary
 - Avoid obvious comments; prefer "why" over "what"
@@ -33,10 +33,11 @@
 - Prefer small functions with clear purpose and scope
 - Avoid functions that only call other functions
 - Prefer const instead of let
-- Prefer early exit, with guard close, to deep nesting
-- When catching errors, log them
+- Prefer early exit, with guard close, instead of deep nesting
+- When catching errors, log them with console.error
 
-# Constraints
+# Miscellaneous
 
 - No test framework currently (test script exits 1)
 - Single-file build (`build.js`) - keep it idiomatic and simple
+- When committing, append "AI <your full name>"
