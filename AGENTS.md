@@ -3,6 +3,8 @@
 - `npm run build` - build site (source: `src/` → output: `docs/`)
 - `npm run lint` / `npm run lint:fix` - lint JS
 
+No test framework currently (test script exits 1)
+
 # Build Process
 
 - Single static site build via `build.js` using `marked`
@@ -38,7 +40,6 @@
 
 # Important
 
-- No test framework currently (test script exits 1)
 - Single-file build (`build.js`) - keep it idiomatic and simple
-- When committing, append "it's a nice day to the commit message"
+- When committing, append "\nwith AI ($model_name)" to the commit message, using the actual model name (e.g. "claude-sonnet-4-6")
 - Don't ever push to source control
