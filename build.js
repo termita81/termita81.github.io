@@ -112,6 +112,10 @@ function extractTitleFromMarkdown(content) {
 	return match ? match[1] : 'Untitled'
 }
 
+function stripTitleFromMarkdown(content) {
+	return content.replace(/^#\s+.+$/m, '').replace(/^\s+/, '')
+}
+
 function parseArticleFilename(filename) {
 	const match = filename.match(/^(\d{4}-\d{2}-\d{2})-(.+)\.md$/)
 	if (match) {
@@ -136,7 +140,7 @@ function getArticles() {
 
 		const content = fs.readFileSync(path.join(ARTICLES_SRC, file), 'utf8')
 		const title = extractTitleFromMarkdown(content)
-		const html = marked.parse(content)
+		const html = marked.parse(stripTitleFromMarkdown(content))
 		const outputFile = `${parsed.date}-${parsed.slug}.html`
 
 		// Replace placeholders in article template
