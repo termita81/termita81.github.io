@@ -359,6 +359,85 @@ body {
 	margin-bottom: 1rem;
 }
 
+.about h2 {
+	font-size: 1.75rem;
+	margin-top: 2rem;
+	margin-bottom: 1rem;
+	color: var(--text-primary);
+}
+
+/* Contact Form */
+.contact-form {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	max-width: 500px;
+}
+
+.contact-form label {
+	font-weight: 500;
+	margin-top: 0.5rem;
+}
+
+.contact-form input[type='text'],
+.contact-form input[type='email'],
+.contact-form textarea {
+	font: inherit;
+	color: var(--text-primary);
+	background-color: var(--bg-secondary);
+	border: 1px solid var(--border);
+	border-radius: 6px;
+	padding: 0.6rem 0.75rem;
+	resize: vertical;
+}
+
+.contact-form input[type='text']:focus,
+.contact-form input[type='email']:focus,
+.contact-form textarea:focus {
+	outline: none;
+	border-color: var(--accent);
+}
+
+.contact-form button {
+	font: inherit;
+	font-weight: 500;
+	color: #fff;
+	background-color: var(--accent);
+	border: none;
+	border-radius: 6px;
+	padding: 0.6rem 1.5rem;
+	margin-top: 0.5rem;
+	cursor: pointer;
+	align-self: flex-start;
+	transition: background-color 0.2s ease;
+}
+
+.contact-form button:hover {
+	background-color: var(--accent-hover);
+}
+
+.contact-form button:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.botcheck-field {
+	display: none;
+}
+
+.contact-form-status {
+	min-height: 1.5em;
+	font-size: 0.9rem;
+}
+
+.contact-form-status.success {
+	color: #2e7d32;
+}
+
+.contact-form-status.error {
+	color: #c62828;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
 	.site-nav {
