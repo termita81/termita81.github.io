@@ -10,6 +10,7 @@
 
 	<h2>Get in touch</h2>
 	<form id="contact-form" class="contact-form" action="https://api.web3forms.com/submit" method="POST">
+		<div class="h-captcha" data-captcha="true"></div>
 		<input type="hidden" name="access_key" value="e074accc-182c-4b25-86ca-519fd862706e" />
 		<input type="hidden" name="subject" value="New message from the blog contact form" />
 		<input type="checkbox" name="botcheck" class="botcheck-field" tabindex="-1" autocomplete="off" />
@@ -28,4 +29,5 @@
 	</form>
 </div>
 
+<script src="https://web3forms.com/client/script.js" async defer></script>
 <script src="/scripts/contact.js?v={{site-version}}"></script>
