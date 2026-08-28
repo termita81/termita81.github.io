@@ -27,6 +27,12 @@ No test framework currently (test script exits 1)
 - App data comes from `src/apps/versions.json`
 - Apps directory is excluded from templating
 
+# Draft Mode
+
+- Prefix an article filename or app directory name with `draft-` (e.g. `src/articles/draft-2026-08-28-slug.md`, `src/apps/draft-myapp/`) to keep it out of `docs/` and the site version hash
+- Drafts still live in `src/` and get committed to git — they're just never built
+- To publish, remove the `draft-` prefix (articles must then match `YYYY-MM-DD-slug.md`)
+
 # Style Rules
 
 - No semicolons at end of statements unless necessary
@@ -37,6 +43,7 @@ No test framework currently (test script exits 1)
 - Prefer const instead of let
 - Prefer early exit, with guard close, instead of deep nesting
 - When catching errors, log them with console.error
+- Only use backtick when actually doing string interpolation 
 
 # Important
 

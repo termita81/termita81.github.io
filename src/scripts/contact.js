@@ -1,7 +1,9 @@
 // Contact form on the About page, submitted via Web3Forms without a page reload
 ;(function () {
 	const form = document.getElementById('contact-form')
-	if (!form) return
+	if (!form) {
+		return
+	}
 
 	const status = document.getElementById('contact-form-status')
 	const submitButton = form.querySelector('button[type="submit"]')
@@ -23,7 +25,7 @@
 
 			if (response.ok && result.success) {
 				status.classList.add('success')
-				status.textContent = "Thanks — your message was sent!"
+				status.textContent = 'Thanks — your message was sent!'
 				form.reset()
 			} else {
 				status.classList.add('error')
@@ -31,6 +33,7 @@
 					result.message || 'Something went wrong. Please try again.'
 			}
 		} catch (err) {
+			console.error('Contact form submission failed:', err)
 			status.classList.add('error')
 			status.textContent = 'Network error. Please try again later.'
 		} finally {

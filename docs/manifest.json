@@ -1,5 +1,5 @@
 {
-  "build": "2026-08-28T04:16:01.052Z",
+  "build": "2026-08-28T04:56:12.831Z",
   "id": "/",
   "name": "Raz's Stuff",
   "short_name": "Raz's Stuff",
@@ -41,5 +41,5 @@
       "purpose": "maskable"
     }
   ],
-  "version": "20260828-0416"
+  "version": "20260828-0439"
 }

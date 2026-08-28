@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const crypto = require('crypto')
+const nodeCrypto = require('crypto')
 const { marked } = require('marked')
 
 const SRC_DIR = './src'
@@ -11,9 +11,16 @@ const TEMPLATES_DIR = path.join(SRC_DIR, 'templates')
 
 const buildDate = new Date().toISOString()
 
-if (!fs.existsSync(DOCS_DIR)) fs.mkdirSync(DOCS_DIR, { recursive: true })
-if (!fs.existsSync(ARTICLES_DEST))
+const DRAFT_PREFIX = 'draft-'
+const isDraft = name => name.startsWith(DRAFT_PREFIX)
+
+if (!fs.existsSync(DOCS_DIR)) {
+	fs.mkdirSync(DOCS_DIR, { recursive: true })
+}
+
+if (!fs.existsSync(ARTICLES_DEST)) {
 	fs.mkdirSync(ARTICLES_DEST, { recursive: true })
+}
 
 const defaultTemplate = fs.readFileSync(
 	path.join(TEMPLATES_DIR, 'default.html'),
@@ -38,7 +45,7 @@ function versionTimestamp() {
 }
 
 function hashFiles(filePaths) {
-	const hash = crypto.createHash('sha256')
+	const hash = nodeCrypto.createHash('sha256')
 	filePaths.sort().forEach(fp => {
 		hash.update(fp)
 		hash.update(fs.readFileSync(fp))
@@ -47,7 +54,7 @@ function hashFiles(filePaths) {
 }
 
 function collectFiles(dir, exts) {
-	if (!fs.existsSync(dir)) return []
+	if (!fs.existsSync(dir)) {return []}
 	return fs.readdirSync(dir)
 		.filter(f => !exts || exts.some(e => f.endsWith(e)))
 		.map(f => path.join(dir, f))
@@ -60,7 +67,9 @@ function buildVersions() {
 
 	// Site hash — excludes SW files, manifest, and versions.json itself
 	const siteFiles = [
-		...collectFiles(path.join(SRC_DIR, 'articles'), ['.md']),
+		...collectFiles(path.join(SRC_DIR, 'articles'), ['.md']).filter(
+			fp => !isDraft(path.basename(fp))
+		),
 		...collectFiles(path.join(SRC_DIR, 'styles')),
 		...collectFiles(path.join(SRC_DIR, 'scripts')),
 		...collectFiles(path.join(SRC_DIR, 'templates')),
@@ -81,6 +90,14 @@ function buildVersions() {
 	const appsSrc = path.join(SRC_DIR, 'apps')
 	fs.readdirSync(appsSrc)
 		.filter(d => fs.statSync(path.join(appsSrc, d)).isDirectory())
+		.filter(d => {
+			// TODO unsure if apps will ever be draft, revisit this
+			if (isDraft(d)) {
+				console.log(`✓ Skipping draft app "${d}"`)
+				return false
+			}
+			return true
+		})
 		.forEach(appName => {
 			const appFiles = collectFiles(path.join(appsSrc, appName))
 			const appHash = hashFiles(appFiles)
@@ -99,10 +116,10 @@ function buildVersions() {
 
 	// Write to docs output (what the SW fetches at /apps/versions.json)
 	const dest = path.join(DOCS_DIR, 'apps', 'versions.json')
-	if (!fs.existsSync(path.dirname(dest))) fs.mkdirSync(path.dirname(dest), { recursive: true })
+	if (!fs.existsSync(path.dirname(dest))) {fs.mkdirSync(path.dirname(dest), { recursive: true })}
 	fs.writeFileSync(dest, JSON.stringify(versions, null, 2))
 
-	console.log(`✓ Versions written`)
+	console.log('✓ Versions written')
 
 	return versions
 }
@@ -144,7 +161,7 @@ function getArticles() {
 		const outputFile = `${parsed.date}-${parsed.slug}.html`
 
 		// Replace placeholders in article template
-		let articleHtml = articleTemplate
+		const articleHtml = articleTemplate
 			.replace('{{title}}', title)
 			.replaceAll('{{date}}', parsed.date)
 			.replace('{{content}}', html)
@@ -170,7 +187,15 @@ function getArticles() {
 	const articles = []
 
 	if (fs.existsSync(ARTICLES_SRC)) {
-		const files = fs.readdirSync(ARTICLES_SRC).filter(f => f.endsWith('.md'))
+		const files = fs.readdirSync(ARTICLES_SRC)
+			.filter(f => f.endsWith('.md'))
+			.filter(f => {
+				if (isDraft(f)) {
+					console.log(`✓ Skipping draft article "${f}"`)
+					return false
+				}
+				return true
+			})
 
 		files.forEach(processFile)
 	}
@@ -208,7 +233,7 @@ function buildHomePage(articleListHtml) {
 
 	fs.writeFileSync(path.join(DOCS_DIR, 'index.html'), finalHomeHtml)
 
-	console.log(`✓ Generated home page`)
+	console.log('✓ Generated home page')
 }
 
 function buildAboutPage() {
@@ -221,14 +246,17 @@ function buildAboutPage() {
 		.replaceAll('{{site-version}}', siteVersion)
 	fs.writeFileSync(path.join(DOCS_DIR, 'about.html'), finalAboutHtml)
 
-	console.log(`✓ Generated about page`)
+	console.log('✓ Generated about page')
 }
 
 function copyFiles(source, destination) {
-	if (!fs.existsSync(source)) return
+	if (!fs.existsSync(source)) {
+		return
+	}
 
-	if (!fs.existsSync(destination))
+	if (!fs.existsSync(destination)) {
 		fs.mkdirSync(destination, { recursive: true })
+	}
 
 	fs.readdirSync(source).forEach(file => {
 		fs.copyFileSync(path.join(source, file), path.join(destination, file))
@@ -272,7 +300,9 @@ function buildServiceWorker() {
 
 function updateManifest(version) {
 	const src = path.join(SRC_DIR, 'manifest.json')
-	if (!fs.existsSync(src)) return
+	if (!fs.existsSync(src)) {
+		return
+	}
 	const manifest = JSON.parse(fs.readFileSync(src, 'utf8'))
 	manifest.version = version
 	manifest.build = buildDate
@@ -283,13 +313,15 @@ function copyIcons() {
 	const iconsSrc = path.join(SRC_DIR, 'icons')
 	const iconsDest = path.join(DOCS_DIR, 'icons')
 	if (fs.existsSync(iconsSrc)) {
-		if (!fs.existsSync(iconsDest)) fs.mkdirSync(iconsDest, { recursive: true })
+		if (!fs.existsSync(iconsDest)) {
+			fs.mkdirSync(iconsDest, { recursive: true })
+		}
 		fs.readdirSync(iconsSrc).forEach(file => {
 			fs.copyFileSync(path.join(iconsSrc, file), path.join(iconsDest, file))
 		})
 	}
 
-	console.log(`✓ Copied static assets`)
+	console.log('✓ Copied static assets')
 }
 
 function buildAppsPage() {
@@ -310,8 +342,12 @@ function buildAppsPage() {
 	}
 
 	const appsDest = path.join(DOCS_DIR, 'apps')
-	if (!fs.existsSync(appsDest)) fs.mkdirSync(appsDest, { recursive: true })
+	if (!fs.existsSync(appsDest)) {fs.mkdirSync(appsDest, { recursive: true })}
 	fs.readdirSync(appsSrc).forEach(appDir => {
+		if (isDraft(appDir)) {
+			return
+		}
+
 		const appSrc = path.join(appsSrc, appDir)
 		const appDest = path.join(appsDest, appDir)
 		if (fs.statSync(appSrc).isDirectory()) {
@@ -319,7 +355,7 @@ function buildAppsPage() {
 		}
 	})
 
-	console.log(`✓ Copied apps`)
+	console.log('✓ Copied apps')
 }
 
 const versions = buildVersions()
