@@ -354,7 +354,7 @@ function buildAppsPage() {
 			fs.cpSync(appSrc, appDest, {
 				recursive: true,
 				force: true,
-				filter: (src, dest) => {
+				filter: src => {
 					const basename = path.basename(src)
 					return basename !== 'node_modules'
 				}
