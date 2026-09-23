@@ -1,28 +1,24 @@
 /* Fuel Tracker CSS - Base Styles */
 
 :root {
-  /* Colors */
-  --primary-color: #2563eb;
-  --primary-hover: #1d4ed8;
-  --bg-color: #f9fafb;
-  --surface-color: #ffffff;
-  --text-color: #1f2937;
-  --text-muted: #6b7280;
-  --border-color: #e5e7eb;
-  --success-color: #10b981;
-  --error-color: #ef4444;
-  --warning-color: #f59e0b;
+/* Colors */
+--primary: #2563eb;
+--secondary: #1d4ed8;
+--background: #f9fafb;
+--surface: #ffffff;
+--text-primary: #1f2937;
 
-  /* Spacing */
-  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 2rem;
+/* Spacing */
+--spacing-base: 8px;
+--spacing-xs: calc(var(--spacing-base) * 0.5);
+--spacing-sm: calc(var(--spacing-base) * 1);
+--spacing-md: calc(var(--spacing-base) * 1.5);
+--spacing-lg: calc(var(--spacing-base) * 2);
+--spacing-xl: calc(var(--spacing-base) * 2.5);
 
-  /* Tab bar */
-  --tab-height: 56px;
-  --tab-bar-height: 60px;
+/* Tab bar */
+--tab-height: 56px;
+--tab-bar-height: 60px;
 }
 
 /* Base Reset */

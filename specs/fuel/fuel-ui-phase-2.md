@@ -1,7 +1,7 @@
 ## Phase 2: CSS Styles (45 min)
 
-- [ ] Define CSS custom properties for colors, spacing, and layout
-  - Create a `styles.css` file and import it in `index.html`
+- [x] Define CSS custom properties for colors, spacing, and layout
+  - Create a `fuel.css` file and import it in `index.html`
   - Variables:
     - `--primary` (brand base)
     - `--secondary` (accent)
