@@ -12,7 +12,7 @@ A web app hosted at `src/apps/fuel/` that tracks fuel consumption and costs for 
 
 - **Date** (date picker)
 - **Odometer** (number input - validates against previous entry)
-- **Fuel amount** (number input - gallons or liters)
+|- **Fuel amount** (number input - liters)
 - **Total Paid** (number input - total transaction amount)
 - **Station name** (text input)
 - **Location** (optional text input)
@@ -23,7 +23,7 @@ A web app hosted at `src/apps/fuel/` that tracks fuel consumption and costs for 
 
 - Calculate MPG or km/l for each entry: `(odometer - previousOdometer) / fuelAmount`
 - Show L/100km equivalent
-- Unit system toggle (imperial/metric)
+*- **Unit system toggle**  (removed – unit is always liters)
 - Period averages with date range filter
 
 ### 3. Statistics & History
@@ -42,7 +42,7 @@ A web app hosted at `src/apps/fuel/` that tracks fuel consumption and costs for 
 
 **Summary Cards**:
 
-- Total fuel purchased (gallons/liters)
+|- **Total fuel purchased (liters)**
 - Total spend
 - Total miles/km traveled
 - Average efficiency
@@ -57,15 +57,15 @@ A web app hosted at `src/apps/fuel/` that tracks fuel consumption and costs for 
 
 ```javascript
 {
-  id: string,                      // unique identifier
+  id: string,                      // format YYYYMMDD-NN (e.g., 20260828-01)
   date: ISO8601 string,            // fill-up date
   odometer: number,                 // vehicle odometer reading
-  fuelAmount: number,              // gallons or liters purchased
+  fuelAmount: number,              // liters purchased
   totalAmount: number,             // what was actually paid
   stationName: string,             // gas station name
   location: string | null,         // optional location description
   fillType: 'fill-up' | 'less',   // full tank or partial
-  unit: 'gallons' | 'liters',     // preferred unit system
+  // unit: 'liters',  // removed – unit is always liters
   createdAt: ISO8601 string,
   updatedAt: ISO8601 string
 }

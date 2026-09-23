@@ -1,6 +1,51 @@
-<div class="apps-index">
-	<h1>Fuel</h1>
-	<p>Fuel app</p>
-	<p>Built at {{build-date}}</p>
-</div>
-<script src="fuel.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fuel Tracker</title>
+  <link rel="stylesheet" href="fuel.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Main Content Area -->
+    <main id="main-content">
+      <!-- Log Section -->
+      <section id="log-section" class="section active">
+        <h1>Log Fill-up</h1>
+        <form id="fuel-form">
+          <!-- Form fields will be added in Phase 4 -->
+          <p>Form coming in Phase 4...</p>
+        </form>
+      </section>
+
+      <!-- History Section -->
+      <section id="history-section" class="section">
+        <h1>History</h1>
+        <p>History list will be displayed here.</p>
+      </section>
+
+      <!-- Settings Section -->
+      <section id="settings-section" class="section">
+        <h1>Settings</h1>
+        <p>Settings options will be added here.</p>
+      </section>
+    </main>
+
+    <!-- Bottom Tab Navigation -->
+    <nav id="tab-nav">
+      <button class="tab active" data-tab="log">
+        <span>Log</span>
+      </button>
+      <button class="tab" data-tab="history">
+        <span>History</span>
+      </button>
+      <button class="tab" data-tab="settings">
+        <span>Settings</span>
+      </button>
+    </nav>
+  </div>
+
+  <script src="fuel.js"></script>
+</body>
+</html>

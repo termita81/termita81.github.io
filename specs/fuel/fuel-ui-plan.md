@@ -1,9 +1,9 @@
 # Fuel Tracker UI Implementation Plan
 
 ## Phase 1: Base HTML Structure (30 min)
-- [ ] Create `fuel.html` with tab-based navigation shell
-- [ ] Add three main sections: Log, History, Settings
-- [ ] Include CSS and JS references
+- [x] Create `index.html` with tab-based navigation shell
+- [x] Add three main sections: Log, History, Settings
+- [x] Include CSS and JS references
 
 ## Phase 2: CSS Styles (45 min)
 - [ ] Set up CSS variables for colors, spacing
