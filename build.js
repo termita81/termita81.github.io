@@ -351,7 +351,14 @@ function buildAppsPage() {
 		const appSrc = path.join(appsSrc, appDir)
 		const appDest = path.join(appsDest, appDir)
 		if (fs.statSync(appSrc).isDirectory()) {
-			fs.cpSync(appSrc, appDest, { recursive: true })
+			fs.cpSync(appSrc, appDest, {
+				recursive: true,
+				force: true,
+				filter: (src, dest) => {
+					const basename = path.basename(src)
+					return basename !== 'node_modules'
+				}
+			})
 		}
 	})
 
