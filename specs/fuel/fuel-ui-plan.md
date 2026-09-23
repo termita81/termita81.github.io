@@ -6,12 +6,12 @@
 - [x] Include CSS and JS references
 
 ## Phase 2: CSS Styles (45 min)
-- [ ] Set up CSS variables for colors, spacing
-- [ ] Mobile-first responsive layout
-- [ ] Tab navigation styling (bottom bar)
-- [ ] Form input styling
-- [ ] Card/table components
-- [ ] Touch-friendly tap targets (44px min)
+- [x] Set up CSS variables for colors, spacing
+- [x] Mobile-first responsive layout
+- [x] Tab navigation styling (bottom bar)
+- [x] Form input styling
+- [x] Card/table components
+- [x] Touch-friendly tap targets (44px min)
 
 ## Phase 3: Core JavaScript State (30 min)
 - [ ] Initialize localStorage (`fuelTracker`)

@@ -1,22 +1,36 @@
 /* Fuel Tracker CSS - Base Styles */
 
 :root {
-/* Colors */
---primary: #2563eb;
---secondary: #1d4ed8;
---background: #f9fafb;
---surface: #ffffff;
---text-primary: #1f2937;
+/*
+ * Color palette – follow the design system of the main site.
+ * The variables are intentionally duplicated with “semantic” names
+ * to keep the CSS readable and to allow for theme changes.
+ */
+--primary: #2563eb;          /* Active link / primary actions */
+--secondary: #1d4ed8;        /* Secondary emphasis */
+--background: #f9fafb;       /* Page background */
+--surface: #ffffff;          /* Card / panel surfaces */
+--text-primary: #1f2937;    /* Body text */
+--text-secondary: #6b7280;   /* Muted text */
+--border: #e5e7eb;          /* Generic borders */
 
-/* Spacing */
+/* Semantic aliases – used throughout the component styles */
+--text-color: var(--text-primary);
+--bg-color: var(--background);
+--surface-color: var(--surface);
+--border-color: var(--border);
+--text-muted: var(--text-secondary);
+--primary-color: var(--primary);
+
+/* Spacing – mobile‑first base unit 8px */
 --spacing-base: 8px;
---spacing-xs: calc(var(--spacing-base) * 0.5);
---spacing-sm: calc(var(--spacing-base) * 1);
---spacing-md: calc(var(--spacing-base) * 1.5);
---spacing-lg: calc(var(--spacing-base) * 2);
---spacing-xl: calc(var(--spacing-base) * 2.5);
+--spacing-xs: calc(var(--spacing-base) * 0.5); /* 4px */
+--spacing-sm: calc(var(--spacing-base) * 1);   /* 8px */
+--spacing-md: calc(var(--spacing-base) * 1.5); /* 12px */
+--spacing-lg: calc(var(--spacing-base) * 2);   /* 16px */
+--spacing-xl: calc(var(--spacing-base) * 2.5); /* 20px */
 
-/* Tab bar */
+/* Tab bar dimensions – ensure 44px touch target minimum */
 --tab-height: 56px;
 --tab-bar-height: 60px;
 }
@@ -40,6 +54,8 @@ body {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  /* Prevent horizontal overflow from small touch devices */
+  overflow-x: hidden;
 }
 
 /* Main Content Area */
@@ -48,6 +64,7 @@ body {
   overflow-y: auto;
   padding: var(--spacing-md);
   padding-bottom: var(--tab-bar-height); /* Space for bottom nav */
+  background: var(--bg-color);
 }
 
 /* Sections */
@@ -64,6 +81,90 @@ h1 {
   font-weight: 600;
   margin-bottom: var(--spacing-md);
   color: var(--text-color);
+}
+
+/* Form styling – minimal but accessible */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+label {
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+input,
+select,
+textarea {
+  font: inherit;
+  padding: var(--spacing-xs);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--surface-color);
+  color: var(--text-color);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(37,99,235,0.2);
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--primary-color);
+  color: #fff;
+  font-weight: 600;
+}
+
+button:hover {
+  background: var(--secondary);
+}
+
+/* Card component */
+.card {
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: var(--spacing-md);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  margin-bottom: var(--spacing-md);
+}
+
+/* Table component – mobile‑friendly */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  text-align: left;
+  padding: var(--spacing-sm);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.table th {
+  background: var(--surface-color);
+  font-weight: 600;
+}
+
+/* Touch‑friendly tap target rule – already applied to .tab */
+/* Ensure other interactive elements meet 44px height */
+button,
+input[type="submit"],
+input[type="button"],
+select {
+  min-height: 44px;
 }
 
 /* Tab Navigation */
@@ -96,6 +197,11 @@ h1 {
   min-width: 44px;
   min-height: 44px;
   padding: var(--spacing-xs);
+}
+
+/* Active tab styling – use primary color */
+.tab.active {
+  color: var(--primary-color);
 }
 
 .tab span {
