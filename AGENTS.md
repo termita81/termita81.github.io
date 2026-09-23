@@ -50,3 +50,4 @@ No test framework currently (test script exits 1)
 - Single-file build (`build.js`) - keep it idiomatic and simple
 - When committing, append "\nwith AI ($model_name)" to the commit message, using the actual model name (e.g. "claude-sonnet-4-6")
 - Don't ever push to source control
+- Never make changes to files under docs/
