@@ -220,3 +220,88 @@ select {
 .tab:active {
   background-color: #f3f4f6;
 }
+
+/* Trying to make history nicer */
+/* 1. Base spacing – help the UI breathe */
+#app {
+  padding: 1rem;                 /* inner gutters */
+  font-family: system-ui, sans-serif;
+}
+
+section.active h1 {
+  margin-bottom: 1rem;
+}
+
+/* 2. Buttons */
+button {
+  padding: 0.6rem 1rem;          /* ~44 px vertical */
+  font-size: 0.95rem;
+  border-radius: 4px;
+  background: var(--primary);
+  color: white;
+  transition: background 150ms ease;
+}
+button:hover { background: var(--secondary); }
+button:active { background: #2242b8; }
+
+/* 3. Form inputs – clear, touch‑friendly */
+input, select, textarea {
+  padding: 0.6rem;
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 4. Table styling – stripes & hover */
+#history-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+#history-table th, #history-table td {
+  padding: 0.75rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+#history-table tbody tr:nth-child(odd) { background: #fafafa; }
+#history-table tbody tr:hover { background: #f0f8ff; }
+
+/* 5. Summary cards – box‑shadows & flex */
+#summary-stats {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+#summary-stats .card {
+  flex: 1;
+  padding: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.05);
+}
+#summary-stats .card p {
+  margin: 0.25rem 0 0;
+  font-weight: 600;
+}
+
+/* 6. Tab bar – clear active state */
+#tab-nav .tab.active {
+  background: var(--primary);
+  color: white;
+}
+#tab-nav .tab {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  margin-right: 0.5rem;
+  font-size: 0.9rem;
+}
+
+/* 7. Responsiveness – keep the table readable */
+@media (max-width: 480px) {
+  #history-table th, #history-table td { font-size: 0.85rem; }
+}
+/* /Trying to make history nicer */
