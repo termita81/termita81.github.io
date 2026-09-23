@@ -31,11 +31,11 @@
 - [x] Add save/cancel handlers
 
 ## Phase 5: History Tab - Display (60 min)
-- [ ] Create history table/list component
-- [ ] Render fill-ups chronologically
-- [ ] Add summary stats cards
-- [ ] Implement edit/delete actions
-- [ ] Add swipe-to-delete (touch)
+- [x] Create history table/list component
+- [x] Render fill-ups chronologically
+- [x] Add summary stats cards
+- [x] Implement edit/delete actions
+- [x] Add swipe-to-delete (touch)
 
 ## Phase 6: Settings Tab (30 min)
 - [ ] Unit toggle (imperial/metric)
