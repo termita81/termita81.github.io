@@ -14,10 +14,10 @@
 - [x] Touch-friendly tap targets (44px min)
 
 ## Phase 3: Core JavaScript State (30 min)
-- [ ] Initialize localStorage (`fuelTracker`)
-- [ ] Create data models (FillUp type/interface)
-- [ ] Add CRUD functions (create, read, update, delete)
-- [ ] Add computed property helpers
+- [x] Initialize localStorage (`fuelTracker`)
+- [x] Create data models (FillUp type/interface)
+- [x] Add CRUD functions (create, read, update, delete)
+- [x] Add computed property helpers
 
 ## Phase 4: Log Tab - Form (45 min)
 - [ ] Build form HTML
