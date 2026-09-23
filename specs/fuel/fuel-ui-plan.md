@@ -20,15 +20,15 @@
 - [x] Add computed property helpers
 
 ## Phase 4: Log Tab - Form (45 min)
-- [ ] Build form HTML
-- [ ] Add date picker (default to today)
-- [ ] Add odometer input with validation
-- [ ] Add fuel amount input
-- [ ] Add price input
-- [ ] Add station/location inputs
-- [ ] Add fill-type dropdown
-- [ ] Add form validation logic
-- [ ] Add save/cancel handlers
+- [x] Build form HTML
+- [x] Add date picker (default to today)
+- [x] Add odometer input with validation
+- [x] Add fuel amount input
+- [x] Add total price input
+- [x] Add station/location inputs
+- [x] Add fill-type dropdown
+- [x] Add form validation logic
+- [x] Add save/cancel handlers
 
 ## Phase 5: History Tab - Display (60 min)
 - [ ] Create history table/list component

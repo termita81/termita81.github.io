@@ -14,8 +14,14 @@
       <section id="log-section" class="section active">
         <h1>Log Fill-up</h1>
         <form id="fuel-form">
-          <!-- Form fields will be added in Phase 4 -->
-          <p>Form coming in Phase 4...</p>
+          <label for="fuel-date">Date:<br><input type="date" id="fuel-date" required></label>
+          <label for="fuel-odometer">Odometer (km):<br><input type="number" id="fuel-odometer" min="0" required></label>
+          <label for="fuel-amount">Fuel Amount (L):<br><input type="number" id="fuel-amount" step="0.01" min="0" required></label>
+          <label for="fuel-price">Total Price ($):<br><input type="number" id="fuel-price" step="0.01" min="0" required></label>
+          <label for="fuel-station">Station:<br><input type="text" id="fuel-station" required></label>
+          <label for="fuel-location">Location:<br><input type="text" id="fuel-location"></label>
+          <label for="fuel-fill-type">Fill Type:<br><select id="fuel-fill-type"><option value="regular">Regular</option><option value="premium">Premium</option><option value="diesel">Diesel</option><option value="electric">Electric</option></select></label>
+          <div class="form-actions" style="margin-top:1rem;display:flex;gap:0.5rem;"><button type="submit">Save</button><button type="button" id="cancel-btn">Cancel</button></div>
         </form>
       </section>
 
