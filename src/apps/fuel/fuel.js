@@ -214,10 +214,55 @@ document.getElementById('cancel-btn').addEventListener('click', () => {
   form.reset();
   delete form.dataset.editId;
 });
-/* Initial render */
+// Initial render
 renderHistory();
 renderSummary();
 enableSwipeDelete();
+
+/* Settings actions */
+function exportData() {
+  const data = JSON.stringify(getAll(), null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'fuelTracker.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+function importData(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      // assume array of items
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+      renderHistory();
+      renderSummary();
+    } catch (err) {
+      alert('Failed to parse JSON');
+    }
+    file.value = '';
+  };
+  reader.readAsText(file);
+}
+function clearData() {
+  if (confirm('Clear all data?')) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
+    renderHistory();
+    renderSummary();
+  }
+}
+// Attach event listeners
+document.getElementById('export-btn').addEventListener('click', exportData);
+document.getElementById('import-btn').addEventListener('click', () => {
+  document.getElementById('import-file').click();
+});
+document.getElementById('import-file').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (file) importData(e.target);
+});
+document.getElementById('clear-btn').addEventListener('click', clearData);
 
 window.fuelTracker = {
   initStorage,

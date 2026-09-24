@@ -38,9 +38,9 @@
 - [x] Add swipe-to-delete (touch)
 
 ## Phase 6: Settings Tab (30 min)
-- [ ] Export button (JSON)
-- [ ] Import button (JSON)
-- [ ] Clear data option
+- [x] Export button (JSON)
+- [x] Import button (JSON)
+- [x] Clear data option
 
 ## Phase 7: Polish & QA (45 min)
 - [ ] Error handling
