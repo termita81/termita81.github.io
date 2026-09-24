@@ -15,17 +15,25 @@ initStorage();
 function getAll() {
   try {
     return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-  } catch (_) {
+  } catch (err) {
+    console.error('Failed to parse storage', err);
+    showMessage('Error reading data', 'error');
     return [];
   }
 }
 
 function create(fillUp) {
-  const data = getAll();
-  const item = { id: Date.now(), ...fillUp };
-  data.push(item);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  return item;
+  try {
+    const data = getAll();
+    const item = { id: Date.now(), ...fillUp };
+    data.push(item);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    return item;
+  } catch (err) {
+    console.error('Create failed', err);
+    showMessage('Error saving entry', 'error');
+    return null;
+  }
 }
 
 function read(id) {
@@ -33,19 +41,31 @@ function read(id) {
 }
 
 function update(id, updates) {
-  const data = getAll();
-  const idx = data.findIndex(i => i.id === id);
-  if (idx === -1) return null;
-  data[idx] = { ...data[idx], ...updates };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  return data[idx];
+  try {
+    const data = getAll();
+    const idx = data.findIndex(i => i.id === id);
+    if (idx === -1) return null;
+    data[idx] = { ...data[idx], ...updates };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    return data[idx];
+  } catch (err) {
+    console.error('Update failed', err);
+    showMessage('Error updating entry', 'error');
+    return null;
+  }
 }
 
 function deleteFill(id) {
-  const data = getAll();
-  const newData = data.filter(i => i.id !== id);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(newData));
-  return newData;
+  try {
+    const data = getAll();
+    const newData = data.filter(i => i.id !== id);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(newData));
+    return newData;
+  } catch (err) {
+    console.error('Delete failed', err);
+    showMessage('Error deleting entry', 'error');
+    return [];
+  }
 }
 
 function totalFuel() {
@@ -94,40 +114,50 @@ function averageFuelEconomy() {
 function renderSummary() {
   const container = document.getElementById('summary-stats');
   if (!container) return;
-  const fuel = totalFuel();
-  const dist = totalDistance();
-  const eco = averageFuelEconomy();
-  container.innerHTML = `
-    <div class="card"><strong>Total Fuel</strong><p>${fuel.toFixed(2)} L</p></div>
-    <div class="card"><strong>Total Distance</strong><p>${dist.toFixed(0)} km</p></div>
-    <div class="card"><strong>Avg. Economy</strong><p>${eco.toFixed(2)} km/L</p></div>
-  `;
+  try {
+    const fuel = totalFuel();
+    const dist = totalDistance();
+    const eco = averageFuelEconomy();
+    container.innerHTML = `
+      <div class="card"><strong>Total Fuel</strong><p>${fuel.toFixed(2)} L</p></div>
+      <div class="card"><strong>Total Distance</strong><p>${dist.toFixed(0)} km</p></div>
+      <div class="card"><strong>Avg. Economy</strong><p>${eco.toFixed(2)} km/L</p></div>
+    `;
+  } catch (err) {
+    console.error('Render summary error', err);
+    showMessage('Failed to render summary', 'error');
+  }
 }
 
 function renderHistory() {
   const tbody = document.querySelector('#history-table tbody');
   if (!tbody) return;
-  const rows = getAll()
-    .slice()
-    .sort((a, b) => new Date(b.date) - new Date(a.date));
-  tbody.innerHTML = '';
-  rows.forEach(item => {
-    const tr = document.createElement('tr');
-    tr.dataset.id = item.id;
-    tr.innerHTML = `
-      <td>${new Date(item.date).toLocaleDateString()}</td>
-      <td>${item.odometer}</td>
-      <td>${item.amount}</td>
-      <td>${item.price}</td>
-      <td>${item.station}</td>
-      <td>
-        <button class="edit">Edit</button>
-        <button class="delete">Delete</button>
-      </td>
-    `;
-    tbody.appendChild(tr);
-  });
-  attachRowEvents();
+  try {
+    const rows = getAll()
+      .slice()
+      .sort((a, b) => new Date(b.date) - new Date(a.date));
+    tbody.innerHTML = '';
+    rows.forEach(item => {
+      const tr = document.createElement('tr');
+      tr.dataset.id = item.id;
+      tr.innerHTML = `
+        <td>${new Date(item.date).toLocaleDateString()}</td>
+        <td>${item.odometer}</td>
+        <td>${item.amount}</td>
+        <td>${item.price}</td>
+        <td>${item.station}</td>
+        <td>
+          <button class="edit" aria-label="Edit entry">Edit</button>
+          <button class="delete" aria-label="Delete entry">Delete</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+    attachRowEvents();
+  } catch (err) {
+    console.error('Render history error', err);
+    showMessage('Failed to render history', 'error');
+  }
 }
 
 function attachRowEvents() {
@@ -203,8 +233,10 @@ form.addEventListener('submit', e => {
   if (editId) {
     update(Number(editId), payload);
     delete form.dataset.editId;
+    showMessage('Entry updated');
   } else {
     create(payload);
+    showMessage('Entry saved');
   }
   form.reset();
   renderHistory();
@@ -214,6 +246,20 @@ document.getElementById('cancel-btn').addEventListener('click', () => {
   form.reset();
   delete form.dataset.editId;
 });
+/**
+ * Utility for showing transient feedback in #message.
+ * type: 'success' or 'error'.
+ */
+const messageEl = document.getElementById('message');
+function showMessage(text, type = 'success') {
+  if (!messageEl) return;
+  messageEl.textContent = text;
+  messageEl.className = type;
+  setTimeout(() => {
+    if (messageEl) messageEl.textContent = '';
+  }, 3000);
+}
+
 // Initial render
 renderHistory();
 renderSummary();
@@ -229,6 +275,7 @@ function exportData() {
   a.download = 'fuelTracker.json';
   a.click();
   URL.revokeObjectURL(url);
+  showMessage('Data exported');
 }
 function importData(file) {
   const reader = new FileReader();
@@ -239,8 +286,9 @@ function importData(file) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
       renderHistory();
       renderSummary();
+      showMessage('Data imported');
     } catch (err) {
-      alert('Failed to parse JSON');
+      showMessage('Failed to import JSON', 'error');
     }
     file.value = '';
   };
@@ -251,6 +299,7 @@ function clearData() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
     renderHistory();
     renderSummary();
+    showMessage('All data cleared');
   }
 }
 // Attach event listeners
