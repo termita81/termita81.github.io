@@ -2,7 +2,7 @@
 
 ## Overview
 
-A web app hosted at `src/apps/fuel/` that tracks fuel consumption and costs for a vehicle.
+A web app with source code at `src/apps/fuel/` that tracks fuel consumption and costs for a vehicle.
 
 ## Core Features
 
@@ -12,16 +12,16 @@ A web app hosted at `src/apps/fuel/` that tracks fuel consumption and costs for 
 
 - **Date** (date picker)
 - **Odometer** (number input - validates against previous entry)
-|- **Fuel amount** (number input - liters)
+- **Fuel amount** (number input - liters)
 - **Total Paid** (number input - total transaction amount)
 - **Station name** (text input)
 - **Location** (optional text input)
 - **Fill type** (select: "Fill-up" or "Less")
-- **Highway/City driving ratio** (optinoal, number + slider)
+- **Highway/City driving ratio** (optional, number + slider)
 
 ### 2. Fuel Efficiency Calculations
 
-- Calculate MPG or km/l for each entry: `(odometer - previousOdometer) / fuelAmount`
+- Calculate km/l for each entry: `(odometer - previousOdometer) / fuelAmount`
 - Show L/100km equivalent
 *- **Unit system toggle**  (removed – unit is always liters)
 - Period averages with date range filter
