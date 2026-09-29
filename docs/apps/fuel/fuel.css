@@ -62,8 +62,8 @@ body {
 #main-content {
   flex: 1;
   overflow-y: auto;
-  padding: var(--spacing-md);
-  padding-bottom: var(--tab-bar-height); /* Space for bottom nav */
+  /* padding: var(--spacing-md); */
+  /* padding-bottom: var(--tab-bar-height); Space for bottom nav */
   background: var(--bg-color);
 }
 
@@ -179,6 +179,7 @@ select {
   display: flex;
   justify-content: space-around;
   align-items: center;
+  margin: 1rem;
 }
 
 .tab {
