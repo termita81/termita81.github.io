@@ -15,24 +15,12 @@
     <div id="message" role="status" aria-live="polite"></div>
     <!-- Main Content Area -->
     <main id="main-content">
-      <!-- Log Section -->
-      <section id="log-section" class="section active">
-        <h1>Log Fill-up</h1>
-        <form id="fuel-form">
-          <label for="fuel-date">Date:<br><input type="date" id="fuel-date" required></label>
-          <label for="fuel-odometer">Odometer (km):<br><input type="number" id="fuel-odometer" min="0" required></label>
-          <label for="fuel-amount">Fuel Amount (L):<br><input type="number" id="fuel-amount" step="0.01" min="0" required></label>
-          <label for="fuel-price">Total Price ($):<br><input type="number" id="fuel-price" step="0.01" min="0" required></label>
-          <label for="fuel-station">Station:<br><input type="text" id="fuel-station" required></label>
-          <label for="fuel-location">Location:<br><input type="text" id="fuel-location"></label>
-          <label for="fuel-fill-type">Fill Type:<br><select id="fuel-fill-type"><option value="regular">Regular</option><option value="premium">Premium</option><option value="diesel">Diesel</option><option value="electric">Electric</option></select></label>
-          <div class="form-actions" style="margin-top:1rem;display:flex;gap:0.5rem;"><button type="submit">Save</button><button type="button" id="cancel-btn">Cancel</button></div>
-        </form>
-      </section>
-
       <!-- History Section -->
-      <section id="history-section" class="section">
-        <h1>History</h1>
+      <section id="history-section" class="section active">
+        <div class="section-header">
+          <h1>History</h1>
+          <button id="log-btn" type="button">Log Fill-up</button>
+        </div>
         <div id="summary-stats" class="summary-cards"></div>
         <table id="history-table">
           <thead>
@@ -64,16 +52,30 @@
 
     <!-- Bottom Tab Navigation -->
     <nav id="tab-nav">
-      <button class="tab active" data-tab="log">
-        <span>Log</span>
-      </button>
-      <button class="tab" data-tab="history">
+      <button class="tab active" data-tab="history">
         <span>History</span>
       </button>
       <button class="tab" data-tab="settings">
         <span>Settings</span>
       </button>
     </nav>
+
+    <!-- Log Entry Modal -->
+    <div id="log-modal" class="modal-overlay" hidden>
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="log-modal-title">
+        <h2 id="log-modal-title">Log Fill-up</h2>
+        <form id="fuel-form">
+          <label for="fuel-date">Date:<br><input type="date" id="fuel-date" required></label>
+          <label for="fuel-odometer">Odometer (km):<br><input type="number" id="fuel-odometer" min="0" required></label>
+          <label for="fuel-amount">Fuel Amount (L):<br><input type="number" id="fuel-amount" step="0.01" min="0" required></label>
+          <label for="fuel-price">Total Price ($):<br><input type="number" id="fuel-price" step="0.01" min="0" required></label>
+          <label for="fuel-station">Station:<br><input type="text" id="fuel-station" required></label>
+          <label for="fuel-location">Location:<br><input type="text" id="fuel-location"></label>
+          <label for="fuel-fill-type">Fill Type:<br><select id="fuel-fill-type"><option value="regular">Regular</option><option value="premium">Premium</option><option value="diesel">Diesel</option><option value="electric">Electric</option></select></label>
+          <div class="form-actions"><button type="submit">Save</button><button type="button" id="cancel-btn">Cancel</button></div>
+        </form>
+      </div>
+    </div>
   </div>
 
   <script src="fuel.js"></script>

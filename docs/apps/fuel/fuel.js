@@ -164,20 +164,7 @@ function attachRowEvents() {
   document.querySelectorAll('#history-table .edit').forEach(btn => {
     btn.addEventListener('click', e => {
       const id = parseInt(e.target.closest('tr').dataset.id, 10);
-      const data = read(id);
-      if (!data) return;
-      // Populate form for editing
-      document.getElementById('fuel-date').value = data.date.split('T')[0];
-      document.getElementById('fuel-odometer').value = data.odometer;
-      document.getElementById('fuel-amount').value = data.amount;
-      document.getElementById('fuel-price').value = data.price;
-      document.getElementById('fuel-station').value = data.station;
-      document.getElementById('fuel-location').value = data.location || '';
-      document.getElementById('fuel-fill-type').value = data.type || 'regular';
-      // Switch to Log tab
-      document.querySelector('#tab-nav .tab[data-tab="log"]').click();
-      // Store edit id on form for later submit
-      document.getElementById('fuel-form').dataset.editId = id;
+      openLogModal(id);
     });
   });
   document.querySelectorAll('#history-table .delete').forEach(btn => {
@@ -189,6 +176,8 @@ function attachRowEvents() {
       renderSummary();
     });
   });
+  // rows are rebuilt on every render, so handlers must be re-attached too
+  enableSwipeDelete();
 }
 
 /* Swipe delete support (simple left swipe detection) */
@@ -216,8 +205,56 @@ function enableSwipeDelete() {
   });
 }
 
-/* Form handling (save / cancel) */
+/* Log modal (create / edit) + form handling */
 const form = document.getElementById('fuel-form');
+const logModal = document.getElementById('log-modal');
+const modalTitle = document.getElementById('log-modal-title');
+let lastFocusedEl = null;
+
+function fillForm(data) {
+  document.getElementById('fuel-date').value = data.date.split('T')[0];
+  document.getElementById('fuel-odometer').value = data.odometer;
+  document.getElementById('fuel-amount').value = data.amount;
+  document.getElementById('fuel-price').value = data.price;
+  document.getElementById('fuel-station').value = data.station;
+  document.getElementById('fuel-location').value = data.location || '';
+  document.getElementById('fuel-fill-type').value = data.type || 'regular';
+}
+
+function openLogModal(editId) {
+  lastFocusedEl = document.activeElement;
+  form.reset();
+  delete form.dataset.editId;
+  if (editId) {
+    const data = read(editId);
+    if (!data) return;
+    form.dataset.editId = editId;
+    fillForm(data);
+    modalTitle.textContent = 'Edit Entry';
+  } else {
+    modalTitle.textContent = 'Log Fill-up';
+  }
+  logModal.hidden = false;
+  document.getElementById('fuel-date').focus();
+}
+
+function closeLogModal() {
+  logModal.hidden = true;
+  form.reset();
+  delete form.dataset.editId;
+  if (lastFocusedEl && document.contains(lastFocusedEl)) {
+    lastFocusedEl.focus();
+  }
+}
+
+document.getElementById('log-btn').addEventListener('click', () => openLogModal());
+logModal.addEventListener('click', e => {
+  if (e.target === logModal) closeLogModal();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !logModal.hidden) closeLogModal();
+});
+
 form.addEventListener('submit', e => {
   e.preventDefault();
   const payload = {
@@ -232,20 +269,16 @@ form.addEventListener('submit', e => {
   const editId = form.dataset.editId;
   if (editId) {
     update(Number(editId), payload);
-    delete form.dataset.editId;
     showMessage('Entry updated');
   } else {
     create(payload);
     showMessage('Entry saved');
   }
-  form.reset();
+  closeLogModal();
   renderHistory();
   renderSummary();
 });
-document.getElementById('cancel-btn').addEventListener('click', () => {
-  form.reset();
-  delete form.dataset.editId;
-});
+document.getElementById('cancel-btn').addEventListener('click', closeLogModal);
 /**
  * Utility for showing transient feedback in #message.
  * type: 'success' or 'error'.
@@ -260,10 +293,9 @@ function showMessage(text, type = 'success') {
   }, 3000);
 }
 
-// Initial render
+// Initial render (renderHistory re-attaches row handlers)
 renderHistory();
 renderSummary();
-enableSwipeDelete();
 
 /* Settings actions */
 function exportData() {
