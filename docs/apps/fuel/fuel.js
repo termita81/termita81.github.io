@@ -218,7 +218,8 @@ function fillForm(data) {
   document.getElementById('fuel-price').value = data.price;
   document.getElementById('fuel-station').value = data.station;
   document.getElementById('fuel-location').value = data.location || '';
-  document.getElementById('fuel-fill-type').value = data.type || 'regular';
+  const savedType = data.type;
+  document.getElementById('fuel-fill-type').value = ['full', 'partial'].includes(savedType) ? savedType : 'full';
 }
 
 function openLogModal(editId) {
