@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Exposure Lab</title>
+<link rel="icon" href="./favicon.svg" type="image/svg+xml" sizes="any">
+<link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+
+<div class="app">
+  <main class="stage">
+    <section class="scenes" aria-labelledby="scenesTitle">
+      <div class="head scene-heading">
+        <h1 id="scenesTitle">Scenes · <span id="scene-name"></span></h1>
+        <button id="scenes-expand" class="btn scenes-expand" type="button" aria-expanded="false" aria-controls="sceneGrid">Expand scenes</button>
+        <p id="scene-description" aria-live="polite"></p>
+      </div>
+      <p id="boot" class="boot">Loading the renderer…</p>
+      <div id="scene-browser" class="scene-browser">
+        <div id="sceneGrid" class="scene-grid" aria-label="Choose a scene"></div>
+      </div>
+      <div id="viewfinder" class="viewfinder">
+        <canvas id="viewfinder-canvas" width="768" height="512" role="img" aria-label="Live viewfinder" aria-describedby="viewfinder-hint" tabindex="0"></canvas>
+        <span id="viewfinder-hint" class="viewfinder-hint">Drag to look · Click to focus · Arrow keys to rotate</span>
+        <button id="reset-view" class="btn reset-view" type="button">Reset view</button>
+        <span class="tile-blink" aria-hidden="true"></span>
+        <span id="focus-point" class="focus-point" aria-hidden="true" hidden></span>
+        <output id="viewfinder-status" class="viewfinder-status"></output>
+      </div>
+    </section>
+
+    <section class="roll" aria-labelledby="rollTitle">
+      <div class="head">
+        <h2 id="rollTitle">Photos taken <span id="rollCount"></span></h2>
+        <button id="rollClear" class="link" type="button" hidden>Delete all</button>
+      </div>
+      <div class="roll-body">
+        <p id="rollEmpty" class="roll-empty">No photos yet. Press the shutter and the selected scene is saved here with its settings.</p>
+        <ol id="rollList" class="roll-list" hidden></ol>
+      </div>
+    </section>
+  </main>
+
+  <aside class="panel" aria-label="Camera controls">
+    <div class="panel-body">
+      <div class="camera-heading"><h2>Camera</h2><button id="welcome-open" class="btn" type="button">Help</button></div>
+      <fieldset class="exposure-mode">
+        <legend>Mode</legend>
+        <div class="exposure-modes">
+          <label title="Program"><input type="radio" name="exposure-mode" value="P" checked> P</label>
+          <label title="Aperture priority"><input type="radio" name="exposure-mode" value="A"> A</label>
+          <label title="Shutter priority"><input type="radio" name="exposure-mode" value="S"> S</label>
+          <label title="Manual"><input type="radio" name="exposure-mode" value="M"> M</label>
+        </div>
+        <p id="mode-hint" class="focus-hint" aria-live="polite"></p>
+      </fieldset>
+      <section id="exposure-panel" class="ev" aria-labelledby="exposure-title">
+        <div class="exposure-heading"><h3 id="exposure-title">Exposure</h3><output id="exposure-result" class="meter-val" aria-live="polite">Correct</output></div>
+        <div class="exposure-values">
+          <div><span class="ev-label">Settings suit</span><output id="evValue" class="ev-value">EV 7</output></div>
+          <div><span class="ev-label">Scene brightness</span><output id="scene-ev" class="ev-value">EV 7</output><span id="exposure-scene" class="exposure-scene">Focus gallery</span></div>
+        </div>
+        <div class="meter">
+          <div class="meter-scale" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><span id="exposure-mark" class="meter-mark"></span></div>
+          <div class="meter-ends" aria-hidden="true"><span>−5 under</span><span>0</span><span>over +5</span></div>
+        </div>
+        <details class="ev-calculation">
+          <summary>What does EV mean?</summary>
+          <p class="ev-note">A scene is bright - but how bright? EV (exposure value) gives us a shared brightness scale: a sunny day outdoors might be EV 15, and a brightly lit indoor scene EV 9.</p>
+          <p class="ev-note">Each step is one stop: twice or half as much light. EV 15 is six stops brighter than EV 9 - that is 64 times as much light.</p>
+          <p class="ev-note">Many settings can suit the same scene. Match “Settings suit” to “Scene brightness” for a balanced exposure. Different combinations can keep the image equally bright while changing focus, motion blur and noise.</p>
+          <details class="ev-formula">
+            <summary>How the settings number is calculated</summary>
+            <div class="ev-eq">
+              <span><small>aperture stops</small><span id="eqA">2</span></span>
+              <span class="op">+</span>
+              <span><small>shutter stops</small><span id="eqT">5</span></span>
+              <span class="op">−</span>
+              <span><small>ISO stops</small><span id="eqS">0</span></span>
+            </div>
+            <p class="ev-note">Count from f/1, 1 s and ISO 100. Closing the aperture one stop or halving the time adds 1; doubling ISO subtracts 1.</p>
+            <p class="ev-note">Formula: log₂(f-number² ÷ time in seconds) − log₂(ISO ÷ 100). This app includes ISO so the result describes the scene brightness your settings suit; aperture/shutter EV alone does not include ISO. Shutter labels such as 1/30 s are rounded from exact full-stop values such as 1/32 s.</p>
+          </details>
+        </details>
+      </section>
+      <div id="controls"></div>
+      <div class="rotation-preference">
+        <label><input id="drag-to-move-room" type="checkbox"> Drag to move room</label>
+      </div>
+      <fieldset class="focus-control">
+        <legend>Focus</legend>
+        <div class="focus-modes">
+          <label><input type="radio" name="focus-mode" value="af" checked> AF</label>
+          <label><input type="radio" name="focus-mode" value="mf"> MF</label>
+        </div>
+        <div id="manual-focus">
+          <div class="ctl-head"><label for="focus-distance">Focus distance</label><output id="focus-distance-value" for="focus-distance">1.9 m</output></div>
+          <input id="focus-distance" type="range" min="0" max="1000" step="1" value="474">
+          <div class="ctl-ends"><span>Near · 1 m</span><span>Far · ∞</span></div>
+        </div>
+        <p id="focus-hint" class="focus-hint"></p>
+      </fieldset>
+
+    </div>
+    <div class="panel-foot">
+      <button id="shutter" class="shutter" type="button">
+        <span class="shutter-ring" aria-hidden="true"></span><span id="shutterLabel">Take photo</span>
+      </button>
+      <p id="footHint" class="foot-hint"></p>
+    </div>
+  </aside>
+</div>
+
+<p id="announce" class="sr-only" aria-live="polite"></p>
+
+<dialog id="welcome" class="welcome" aria-labelledby="welcome-title" aria-describedby="welcome-intro">
+  <div class="welcome-heading">
+    <div><p class="welcome-eyebrow">Exposure Lab</p><h2 id="welcome-title">Explore how a camera sees</h2></div>
+    <button id="welcome-close" class="btn" type="button" aria-label="Close welcome">Close</button>
+  </div>
+  <p id="welcome-intro">How bright is a scene, and how can your camera turn that light into a picture? Start with brightness, then explore the choices that make each picture different.</p>
+  <div class="welcome-details">
+    <section>
+      <h3>A scene is bright - but how bright?</h3>
+      <p>We need a scale to describe brightness. A sunny day outdoors might be <strong>15</strong>, while a brightly lit indoor scene might be <strong>9</strong>. These numbers are <strong>exposure values (EV)</strong>: a common reference for how much light a scene has, expressed at ISO 100.</p>
+      <p>The numbers count steps, rather than equal amounts of light. Each step is <strong>one stop</strong>: EV 10 is twice as bright as EV 9, and EV 8 is half as bright. Outdoors at EV 15 is six stops brighter than indoors at EV 9 - <strong>64 times as much light</strong>.</p>
+    </section>
+    <section>
+      <h3>One brightness, many settings</h3>
+      <p>A scene’s EV does not prescribe one set of settings. For an <strong>EV 9</strong> scene, both combinations give the same image brightness:</p>
+      <ul class="welcome-examples">
+        <li><strong>f/4 · ISO 200 · 1/60 s</strong></li>
+        <li><strong>f/8 · ISO 400 · 1/30 s</strong></li>
+      </ul>
+      <p>Going from f/4 to f/8 closes the aperture by two stops, letting in one-quarter as much light. Doubling the time recovers one stop; doubling ISO recovers the other. The changes balance out.</p>
+      <p>These are the app’s rounded shutter labels; the exact full-stop times are 1/64 s and 1/32 s.</p>
+    </section>
+    <section>
+      <h3>Same brightness, different pictures</h3>
+      <dl>
+        <dt>Aperture</dt><dd>A lower f-number admits more light and gives a shallower depth of field. A higher number keeps a wider range of distances sharp.</dd>
+        <dt>Shutter time</dt><dd>A longer time collects more light but allows moving subjects to blur. A shorter time freezes more movement.</dd>
+        <dt>ISO</dt><dd>Higher ISO brightens the recorded signal; it does not collect more light. Noise becomes more visible when less light is collected and ISO is raised to compensate.</dd>
+        <dt>Focal length</dt><dd>A longer lens narrows the view and makes focus blur more pronounced at the same aperture and focus distance.</dd>
+      </dl>
+      <p>In the example, f/8 gives more depth of field, the longer shutter time can blur movement, and higher ISO can make noise more visible. Choose the combination that gives you the picture you want.</p>
+    </section>
+    <section>
+      <h3>Read the exposure meter</h3>
+      <p><strong>Scene brightness</strong> tells you how much light is available. <strong>Settings suit</strong> tells you the scene brightness your current aperture, shutter and ISO can handle. Match the two for a balanced exposure.</p>
+      <p>If your settings suit a brighter scene than the one you have, the picture is too dark. If they suit a darker scene, the picture is too bright. The meter shows the difference in stops: <strong>+1</strong> means twice the image brightness, and <strong>−1</strong> means half.</p>
+      <p>“Correct” means balanced for this simulator’s reference. You can deliberately make a picture brighter or darker.</p>
+    </section>
+    <section>
+      <h3>Choose who sets the exposure</h3>
+      <dl>
+        <dt>P · Program</dt><dd>The camera chooses aperture and shutter time.</dd>
+        <dt>A · Aperture priority</dt><dd>You choose aperture; the camera chooses shutter time.</dd>
+        <dt>S · Shutter priority</dt><dd>You choose shutter time; the camera chooses aperture.</dd>
+        <dt>M · Manual</dt><dd>You choose both aperture and shutter time.</dd>
+      </dl>
+      <p>You choose ISO in every mode. Automatic modes aim to balance exposure, but can reach the available settings’ limits. In M, compensate for a change yourself to keep brightness constant.</p>
+    </section>
+    <section>
+      <h3>Try three experiments</h3>
+      <p><strong>Focus:</strong> start in Focus gallery. Choose A, focus on the 5 m target and compare f/2 with f/8. Watch which distance labels become sharp while the camera balances brightness.</p>
+      <p><strong>Motion:</strong> choose Sunny beach, S and ISO 100. Compare the jetski at 1/30 s and 1/500 s. The camera changes aperture while you change how much movement is recorded.</p>
+      <p><strong>Noise:</strong> choose Gray card and P. Compare ISO 100 with ISO 6400. The camera collects less light to keep brightness balanced; look for the extra grain.</p>
+    </section>
+    <section>
+      <h3>Look around and choose focus</h3>
+      <p>Click a scene thumbnail to select it. Thumbnails are fixed, balanced references; moving subjects are slightly blurred to suggest motion. The viewfinder uses your current settings.</p>
+      <p>Drag the viewfinder to rotate the camera, or use arrow keys when it has focus. Use <strong>Reset view</strong> or Home to return. With “Drag to move room” checked, the room follows your drag: dragging up looks down and dragging right looks left. Unchecked, dragging up looks up and dragging right looks right.</p>
+      <p>In <strong>AF</strong>, click to focus. The green square marks your point, and autofocus follows the depth at that point. In <strong>MF</strong>, choose a distance from 1 m to infinity. The gray card has no focus detail.</p>
+    </section>
+    <section>
+      <h3>Take, compare and keep photos</h3>
+      <p>Click <strong>Take photo</strong> or press Space. Open a photo from the bottom strip to see its settings; use Previous/Next, the thumbnails or arrow keys to browse. Turn on comparison to see two photos together. Escape closes the lightbox, and scene movement pauses while it is open.</p>
+      <p>Photos are 1920 × 1280 JPEGs with EXIF camera settings. They last only for this page session: download what you want to keep before reloading. Deletion asks for confirmation.</p>
+      <p>This is a learning simulator. Scene EV is fixed, exposure controls use whole stops, and the preview approximates depth of field, motion and noise. Real cameras also respond to metering choices, sensor characteristics and changing light.</p>
+    </section>
+  </div>
+  <div class="welcome-footer">
+    <p>You can reopen this guide using Help in the camera panel.</p>
+    <button id="welcome-start" class="btn" type="button" autofocus>Start exploring</button>
+  </div>
+</dialog>
+
+<dialog id="lightbox" class="lightbox" aria-labelledby="lbTitle">
+  <div class="lb">
+    <div id="lb-stage" class="lb-stage">
+      <figure class="lb-photo"><img id="lbImg" alt="" width="768" height="512"><figcaption id="lb-primary-caption" hidden></figcaption></figure>
+      <figure id="lb-comparison-photo" class="lb-photo" hidden><img id="lb-comparison-image" alt="" width="768" height="512"><figcaption id="lb-comparison-caption"></figcaption></figure>
+    </div>
+    <div class="lb-info">
+      <p id="lbCount" class="lb-count"></p>
+      <h2 id="lbTitle"></h2>
+      <div>
+        <p id="lbResult" class="lb-result"></p>
+        <p id="lbWhy" class="lb-why"></p>
+      </div>
+      <dl id="lbMeta" class="lb-meta"></dl>
+      <div class="lb-compare-controls">
+        <button id="lb-compare" class="btn" type="button" aria-pressed="false" aria-keyshortcuts="c" title="Toggle comparison (C)">Compare photos</button>
+        <div id="lb-comparison-picker" hidden>
+          <label for="lb-comparison-select">Compare with</label>
+          <select id="lb-comparison-select"></select>
+        </div>
+      </div>
+      <div class="lb-buttons">
+        <button id="lbPrev" class="btn" type="button">← Previous</button>
+        <button id="lbNext" class="btn" type="button">Next →</button>
+        <a id="lbDownload" class="btn" href="#" download>Download</a>
+        <button id="lbDelete" class="btn" type="button">Delete</button>
+        <button id="lbClose" class="btn wide" type="button" autofocus>Close</button>
+      </div>
+    </div>
+    <section id="lb-comparison-roll" class="lb-comparison-roll" aria-label="Photos for comparison" hidden>
+      <p>Choose a photo to compare with the main image.</p>
+      <ol id="lb-comparison-list" class="roll-list"></ol>
+    </section>
+  </div>
+</dialog>
+
+<template id="shot-badge-template"><span class="shot-badge" aria-hidden="true"></span></template>
+
+<template id="comparison-shot-template">
+  <li>
+    <button class="shot" type="button" aria-pressed="false">
+      <img width="144" height="96" alt="">
+      <span class="comparison-role"></span>
+      <span class="shot-cap"><b></b><span></span></span>
+    </button>
+  </li>
+</template>
+
+<template id="comparison-option-template"><option></option></template>
+<template id="photo-detail-template"><dt></dt><dd></dd></template>
+
+<template id="scene-template">
+  <button type="button" class="tile" aria-pressed="false">
+    <span class="tile-frame"><canvas width="768" height="512" aria-hidden="true"></canvas></span>
+    <span class="tile-cap"><span class="tile-name"></span><span class="tile-ev"></span></span>
+  </button>
+</template>
+
+
+
+<template id="canvas-template"><canvas></canvas></template>
+<template id="tick-template"><i></i></template>
+<template id="control-template">
+  <div class="ctl">
+    <div class="ctl-head"><label></label><output class="ctl-value"></output></div>
+    <input type="range" min="0" step="1">
+    <div class="ctl-ticks" aria-hidden="true"></div>
+    <div class="ctl-ends" aria-hidden="true">
+      <span><b></b><br><span data-field="effect"></span></span>
+      <span><b></b><br><span data-field="effect"></span></span>
+    </div>
+  </div>
+</template>
+<template id="photo-template">
+  <li><button type="button" class="shot">
+    <img width="144" height="96" alt="">
+    <span class="shot-badge" aria-hidden="true"></span>
+    <span class="shot-cap"><b></b><span data-field="settings"></span></span>
+  </button></li>
+</template>
+
+<script src="./js/boot.js"></script>
+<script src="./js/welcome.js"></script>
+
+<script type="module" src="./js/main.js"></script>
+</body>
+</html>
