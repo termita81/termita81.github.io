@@ -2,7 +2,40 @@ import { $ } from './dom.js';
 import { verdict, formatFocus, num } from './format.js';
 export function createLightbox({ readyShots, removeShot }) {
   const lightbox = $('lightbox'), lbImg = $('lbImg');
+  const stage = $('lb-stage');
   let currentShot = null, comparing = false, comparisonShot = null;
+  let swipe = null;
+
+  function cancelSwipe() {
+    if (!swipe) return;
+    const { pointer } = swipe;
+    swipe = null;
+    if (stage.hasPointerCapture(pointer)) stage.releasePointerCapture(pointer);
+  }
+
+  stage.addEventListener('pointerdown', (event) => {
+    if (!event.isPrimary) {
+      cancelSwipe();
+      return;
+    }
+    if (event.button !== 0 || event.target.closest('button') || readyShots().length < 2) return;
+    swipe = { pointer: event.pointerId, x: event.clientX, y: event.clientY };
+    stage.setPointerCapture(event.pointerId);
+  });
+  stage.addEventListener('pointerup', (event) => {
+    if (!swipe || event.pointerId !== swipe.pointer) return;
+    const dx = event.clientX - swipe.x;
+    const dy = event.clientY - swipe.y;
+    cancelSwipe();
+    // Ignore taps and mostly vertical gestures so scrolling does not change photos.
+    if (Math.abs(dx) >= 40 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      stepShot(dx < 0 ? 1 : -1);
+    }
+  });
+  for (const type of ['pointercancel', 'lostpointercapture']) {
+    stage.addEventListener(type, cancelSwipe);
+  }
+
   function comparisonCaption(shot) {
     return `#${shot.id} · ${shot.scene} · ${verdict(shot.delta)}
   ${shot.mode} · ISO ${shot.iso} · f/${shot.aperture} · ${shot.shutter} s · ${shot.focal} mm · ${shot.focusMode.toUpperCase()} ${formatFocus(shot.focusDistance)}`;
@@ -84,6 +117,7 @@ export function createLightbox({ readyShots, removeShot }) {
   }
 
   function showShot(id) {
+    cancelSwipe();
     const list = readyShots();
     const i = list.findIndex((s) => s.id === id);
     if (i < 0) { if (lightbox.open) lightbox.close(); return; }
@@ -145,6 +179,7 @@ export function createLightbox({ readyShots, removeShot }) {
     syncComparison();
   });
   lightbox.addEventListener('close', () => {
+    cancelSwipe();
     comparing = false;
     comparisonShot = null;
     syncComparison();

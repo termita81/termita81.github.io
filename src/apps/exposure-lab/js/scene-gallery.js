@@ -2,8 +2,14 @@ import { $ } from './dom.js';
 import { scenes } from './scenes.js';
 import { state } from './state.js';
 import { num } from './format.js';
-import { renderer, expose } from './renderer.js';
-import { referenceView } from './exposure.js';
+const thumbnails = {
+  gallery: 'focus-gallery.jpg',
+  shapes: 'floating-shapes.jpg',
+  night: 'city-street-at-night.jpg',
+  beach: 'sunny-beach.jpg',
+  'sunset-beach': 'golden-hour-beach.jpg',
+  gray: 'gray-card.jpg',
+};
 
 export function setupSceneGallery({ refresh }) {
   const browser = $('scene-browser');
@@ -42,26 +48,7 @@ export function setupSceneGallery({ refresh }) {
       }
     });
     sc.tile = tile;
-    sc.ctx = tile.querySelector('canvas').getContext('2d');
+    tile.querySelector('img').src = `./images/${thumbnails[sc.id]}`;
     $('sceneGrid').append(tile);
-    const view = referenceView(sc.thumbnailExposure?.time ?? 0);
-    if (sc.thumbnailExposure) {
-      // Integrate subject movement without changing brightness or adding lens blur.
-      view.shutter = sc.thumbnailExposure.shutter;
-      view.samples = 48;
-    }
-    const rotation = sc.thumbnailExposure;
-    const originalRotation = sc.viewRotation ? { ...sc.viewRotation } : null;
-    try {
-      if (rotation && sc.rotateBy) sc.rotateBy(rotation.yaw ?? 0, rotation.pitch ?? 0);
-      expose(sc, view);
-      sc.ctx.drawImage(renderer.domElement, 0, 0);
-    } finally {
-      // Thumbnail framing must not change the user's live camera direction.
-      if (originalRotation) {
-        sc.resetView();
-        sc.rotateBy(originalRotation.yaw, originalRotation.pitch);
-      }
-    }
   }
 }

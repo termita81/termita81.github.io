@@ -4,7 +4,7 @@ export const state = {
   iso: 0,
   aperture: 4,
   shutter: 8,
-  focal: 3,
+  focal: 4,
   selected: "gallery",
   focusMode: "af",
   focusDistance: 5,

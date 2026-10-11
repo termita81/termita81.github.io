@@ -69,7 +69,7 @@
         <details class="ev-calculation">
           <summary>What does EV mean?</summary>
           <p class="ev-note">A scene is bright - but how bright? EV (exposure value) gives us a shared brightness scale: a sunny day outdoors might be EV 15, and a brightly lit indoor scene EV 9.</p>
-          <p class="ev-note">Each step is one stop: twice or half as much light. EV 15 is six stops brighter than EV 9 - that is 64 times as much light.</p>
+          <p class="ev-note">Each step is one stop: twice or half as much light. EV 15 is six stops brighter than EV 9 - that is 64 times as much light (2 to the power of 6).</p>
           <p class="ev-note">Many settings can suit the same scene. Match “Settings suit” to “Scene brightness” for a balanced exposure. Different combinations can keep the image equally bright while changing focus, motion blur and noise.</p>
           <details class="ev-formula">
             <summary>How the settings number is calculated</summary>
@@ -118,7 +118,7 @@
 <dialog id="welcome" class="welcome" aria-labelledby="welcome-title" aria-describedby="welcome-intro">
   <div class="welcome-heading">
     <div><p class="welcome-eyebrow">Exposure Lab</p><h2 id="welcome-title">Explore how a camera sees</h2></div>
-    <button id="welcome-close" class="btn" type="button" aria-label="Close welcome">Close</button>
+    <button id="welcome-close" class="btn" type="button" aria-label="Close welcome" autofocus>Close</button>
   </div>
   <p id="welcome-intro">How bright is a scene, and how can your camera turn that light into a picture? Start with brightness, then explore the choices that make each picture different.</p>
   <div class="welcome-details">
@@ -126,6 +126,7 @@
       <h3>A scene is bright - but how bright?</h3>
       <p>We need a scale to describe brightness. A sunny day outdoors might be <strong>15</strong>, while a brightly lit indoor scene might be <strong>9</strong>. These numbers are <strong>exposure values (EV)</strong>: a common reference for how much light a scene has, expressed at ISO 100.</p>
       <p>The numbers count steps, rather than equal amounts of light. Each step is <strong>one stop</strong>: EV 10 is twice as bright as EV 9, and EV 8 is half as bright. Outdoors at EV 15 is six stops brighter than indoors at EV 9 - <strong>64 times as much light</strong>.</p>
+      <p>Read more about <a href="https://en.wikipedia.org/wiki/Exposure_value" target="_blank" rel="noopener noreferrer">exposure value on Wikipedia</a>.</p>
     </section>
     <section>
       <h3>One brightness, many settings</h3>
@@ -140,13 +141,14 @@
     <section>
       <h3>Same brightness, different pictures</h3>
       <dl>
-        <dt>Aperture</dt><dd>A lower f-number admits more light and gives a shallower depth of field. A higher number keeps a wider range of distances sharp.</dd>
+        <dt>Aperture</dt><dd>A lower f-number, such as f/2, opens the aperture wider and admits more light. It also gives a shallower depth of field: only a narrow range of distances around your focus point looks sharp, while objects closer to the camera or farther away look more blurred. For example, focus on a person and their face can be sharp while the background is soft. A higher f-number, such as f/8, closes the aperture and admits less light, but makes a wider range of distances look sharp. The size of that range also depends on focal length and focus distance: a longer lens or focusing closer generally makes it narrower.</dd>
         <dt>Shutter time</dt><dd>A longer time collects more light but allows moving subjects to blur. A shorter time freezes more movement.</dd>
-        <dt>ISO</dt><dd>Higher ISO brightens the recorded signal; it does not collect more light. Noise becomes more visible when less light is collected and ISO is raised to compensate.</dd>
+        <dt>ISO</dt><dd>ISO controls how brightly the camera records the light it receives. On a digital camera, raising ISO boosts the signal and its recorded brightness; it does not make the sensor collect more light. Doubling ISO, for example from 800 to 1600, adds one stop of brightness at the same aperture and shutter speed. You can instead use that extra stop to halve the shutter time and reduce motion blur while keeping the picture equally bright.</dd>
         <dt>Focal length</dt><dd>A longer lens narrows the view and makes focus blur more pronounced at the same aperture and focus distance.</dd>
       </dl>
       <p>In the example, f/8 gives more depth of field, the longer shutter time can blur movement, and higher ISO can make noise more visible. Choose the combination that gives you the picture you want.</p>
     </section>
+    <div class="welcome-exposure">
     <section>
       <h3>Read the exposure meter</h3>
       <p><strong>Scene brightness</strong> tells you how much light is available. <strong>Settings suit</strong> tells you the scene brightness your current aperture, shutter and ISO can handle. Match the two for a balanced exposure.</p>
@@ -162,11 +164,21 @@
         <dt>M · Manual</dt><dd>You choose both aperture and shutter time.</dd>
       </dl>
       <p>You choose ISO in every mode. Automatic modes aim to balance exposure, but can reach the available settings’ limits. In M, compensate for a change yourself to keep brightness constant.</p>
+      <details class="ev-calculation iso-details">
+        <summary>ISO, noise and film grain in more detail</summary>
+        <p><strong>Why noise appears:</strong> light arrives unevenly, and the sensor electronics add some noise too. Collecting less light with a faster shutter or smaller aperture makes that variation larger relative to the useful signal. Raising ISO makes the result bright enough to see, including its noise. This often looks like speckles, coloured patches or lost detail, especially in shadows. Raising ISO alone does not necessarily worsen the signal-to-noise ratio if the amount of captured light stays the same.</p>
+        <p><strong>A practical starting guide for modern digital cameras:</strong> ISO 100-400 is useful when there is plenty of light; 800-1600 is common indoors or when you need a faster shutter; 3200 is often very usable on recent APS-C and full-frame cameras; 6400 and above can still be useful when getting a sharp picture matters more than keeping noise low. These are starting points, not quality boundaries. Sensor size and generation, exposure, shadow brightening, noise reduction, cropping and print or display size all affect the result. A sharp ISO 3200 image can be more useful than a blurred ISO 400 image.</p>
+        <p><strong>See digital examples:</strong> Canon's <a href="https://snapshot.asia.canon/en/article/eos-r7-or-advanced-aps-c-dslr-part-2-core-capabilities" target="_blank" rel="noopener noreferrer">EOS R7 and EOS 7D Mark II comparison</a> includes ISO 3200 crops showing how detail differs between camera generations. Nikon's <a href="https://www.nikonusa.com/learn-and-explore/c/tips-and-techniques/z6iii-is-a-creative-powerhouse" target="_blank" rel="noopener noreferrer">Z6III field photographs</a> include a bird photograph at ISO 8000. These illustrate usable results, rather than a guarantee for every scene.</p>
+        <p><strong>On film:</strong> ISO describes the film stock's sensitivity, so changing the camera's ISO dial does not change the film already loaded. Faster films generally show more grain, a texture from the developed photographic emulsion rather than digital sensor noise. Shooting film at a higher exposure index and extending development is called pushing; this often increases contrast and makes grain more noticeable. At 3200, grain can be pronounced, especially on 35 mm film and in large enlargements, but its appearance depends on film, development, negative size and scanning.</p>
+        <p><strong>See film examples:</strong> Gregory Owain's <a href="https://www.gregoryowain.co.uk/blog/film-review-ilford-delta-3200" target="_blank" rel="noopener noreferrer">Delta 3200 photographs and comparison with Tri-X 400</a> show visible but manageable grain on medium-format film. The <a href="https://www.ilfordphoto.com/amfile/file/download/file/1913/product/682/" target="_blank" rel="noopener noreferrer">ILFORD technical sheet</a> explains that Delta 3200 has a measured ISO of 1000 and is designed for exposure at EI 3200 with extended development.</p>
+        <p><strong>In this simulator:</strong> noise is deliberately made easy to see. It illustrates the tradeoff between captured light and image quality, rather than predicting how noisy a particular camera will be at ISO 3200.</p>
+      </details>
     </section>
+    </div>
     <section>
       <h3>Try three experiments</h3>
-      <p><strong>Focus:</strong> start in Focus gallery. Choose A, focus on the 5 m target and compare f/2 with f/8. Watch which distance labels become sharp while the camera balances brightness.</p>
-      <p><strong>Motion:</strong> choose Sunny beach, S and ISO 100. Compare the jetski at 1/30 s and 1/500 s. The camera changes aperture while you change how much movement is recorded.</p>
+      <p><strong>Focus:</strong> start in Focus gallery. Use <strong>A (aperture priority)</strong>: you choose the aperture to explore depth of field, while the camera adjusts shutter speed to keep brightness balanced. Focus on the 5 m target and compare f/2 with f/8. Watch which distance labels become sharp. Also try manual focus.</p>
+      <p><strong>Motion:</strong> use <strong>S (shutter priority)</strong> for movement scenes: you choose how long movement is recorded, while the camera adjusts aperture to keep brightness balanced. In Sunny beach at ISO 100, compare the jetski at 1/30 s and 1/500 s. Try the same comparison with the circling seagull in Golden hour beach, raising ISO if the camera reaches its aperture limit.</p>
       <p><strong>Noise:</strong> choose Gray card and P. Compare ISO 100 with ISO 6400. The camera collects less light to keep brightness balanced; look for the extra grain.</p>
     </section>
     <section>
@@ -177,22 +189,36 @@
     </section>
     <section>
       <h3>Take, compare and keep photos</h3>
-      <p>Click <strong>Take photo</strong> or press Space. Open a photo from the bottom strip to see its settings; use Previous/Next, the thumbnails or arrow keys to browse. Turn on comparison to see two photos together. Escape closes the lightbox, and scene movement pauses while it is open.</p>
+      <p>Click <strong>Take photo</strong> or press Space. Open a photo from the bottom strip to see its settings; swipe left or right on the photo, or use Previous/Next, the thumbnails or arrow keys to browse. Turn on comparison to see two photos together. Escape closes the lightbox, and scene movement pauses while it is open.</p>
       <p>Photos are 1920 × 1280 JPEGs with EXIF camera settings. They last only for this page session: download what you want to keep before reloading. Deletion asks for confirmation.</p>
       <p>This is a learning simulator. Scene EV is fixed, exposure controls use whole stops, and the preview approximates depth of field, motion and noise. Real cameras also respond to metering choices, sensor characteristics and changing light.</p>
     </section>
+    <section>
+      <h3>This app does not store any cookies</h3>
+      <p><strong>In your browser:</strong> the app remembers only that you have dismissed this guide, using local storage. Clearing this site's browser data makes the guide appear automatically again.</p>
+      <p><strong>While this page is open:</strong> your camera settings, selected scene, viewing direction and simulated photos stay in memory. Reloading or closing the page clears them. Photos are generated locally and are not uploaded.</p>
+      <p><strong>When you download a photo:</strong> the JPEG contains the simulated image and EXIF metadata: capture date and time in UTC, scene name, exposure mode, ISO, aperture, shutter speed, focal length, focus mode and distance, and exposure values. Downloaded files stay on your device until you delete them.</p>
+    </section>
   </div>
+  <p>Most importantly, go out there, take photos, learn and HAVE FUN!</p>
   <div class="welcome-footer">
     <p>You can reopen this guide using Help in the camera panel.</p>
-    <button id="welcome-start" class="btn" type="button" autofocus>Start exploring</button>
+    <button id="welcome-start" class="btn" type="button">Start exploring</button>
   </div>
 </dialog>
 
 <dialog id="lightbox" class="lightbox" aria-labelledby="lbTitle">
   <div class="lb">
     <div id="lb-stage" class="lb-stage">
-      <figure class="lb-photo"><img id="lbImg" alt="" width="768" height="512"><figcaption id="lb-primary-caption" hidden></figcaption></figure>
-      <figure id="lb-comparison-photo" class="lb-photo" hidden><img id="lb-comparison-image" alt="" width="768" height="512"><figcaption id="lb-comparison-caption"></figcaption></figure>
+      <figure class="lb-photo">
+        <div class="lb-image">
+          <img id="lbImg" alt="" width="768" height="512" draggable="false">
+          <button id="lbPrev" class="lb-nav lb-nav-prev" type="button" aria-label="Previous photo" title="Previous photo">&lt;</button>
+          <button id="lbNext" class="lb-nav lb-nav-next" type="button" aria-label="Next photo" title="Next photo">&gt;</button>
+        </div>
+        <figcaption id="lb-primary-caption" hidden></figcaption>
+      </figure>
+      <figure id="lb-comparison-photo" class="lb-photo" hidden><img id="lb-comparison-image" alt="" width="768" height="512" draggable="false"><figcaption id="lb-comparison-caption"></figcaption></figure>
     </div>
     <div class="lb-info">
       <p id="lbCount" class="lb-count"></p>
@@ -210,8 +236,6 @@
         </div>
       </div>
       <div class="lb-buttons">
-        <button id="lbPrev" class="btn" type="button">← Previous</button>
-        <button id="lbNext" class="btn" type="button">Next →</button>
         <a id="lbDownload" class="btn" href="#" download>Download</a>
         <button id="lbDelete" class="btn" type="button">Delete</button>
         <button id="lbClose" class="btn wide" type="button" autofocus>Close</button>
@@ -241,7 +265,7 @@
 
 <template id="scene-template">
   <button type="button" class="tile" aria-pressed="false">
-    <span class="tile-frame"><canvas width="768" height="512" aria-hidden="true"></canvas></span>
+    <span class="tile-frame"><img width="768" height="512" alt="" decoding="async"></span>
     <span class="tile-cap"><span class="tile-name"></span><span class="tile-ev"></span></span>
   </button>
 </template>

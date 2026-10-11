@@ -1,5 +1,5 @@
 import { createCameraAim } from "./camera-aim.js";
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js";
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
 import { cloneTemplate } from "./dom.js";
 import { addGoldenHourSky, addGoldenReflection } from "./golden-hour.js";
 import { createSeagull } from "./seagull.js";
@@ -477,7 +477,7 @@ export function beachScene(renderer, width, height, { goldenHour = false } = {})
     ev: goldenHour ? 9 : 15,
     isStatic: false,
     thumbnailExposure: goldenHour ? { time: 13.58, shutter: 0.025, yaw: -0.07, pitch: -0.1 } : { time: 0, shutter: 0.2 },
-    note: goldenHour ? "Golden afternoon light at EV 9, with the sun still above the sea roughly 1–1.5 hours before sundown. Warm sand, long shadows, rose-tinted mountains, and a golden reflection on the water. The seagull keeps circling: compare shutter speeds and focus between the beach and offshore subjects." : "Bright sun at EV 15: sandcastles, an umbrella and towel, and an open esky with two beers. A fisherman floats about 80 m offshore; a 780 m mountain rises across the water about 5.5 km away. A jetski passes at up to 14 m/s (50 km/h): compare 1/30 s with 1/250–1/500 s, and focus on the rider to isolate motion blur.",
+    note: goldenHour ? "Golden afternoon light at EV 9, with the sun still above the sea roughly 1–1.5 hours before sundown. Warm sand, long shadows, rose-tinted mountains, and a golden reflection on the water. The seagull completes one circuit every 24 seconds: compare shutter speeds and focus between the beach and offshore subjects." : "Bright sun at EV 15: sandcastles, an umbrella and towel, and an open esky with two beers. A fisherman floats about 80 m offshore; a 780 m mountain rises across the water about 5.5 km away. A jetski passes at up to 14 m/s (50 km/h): compare 1/30 s with 1/250–1/500 s, and focus on the rider to isolate motion blur.",
     focusPoint: null,
     autofocusDistance: 10,
     focusAt(x, y, focal, time) {

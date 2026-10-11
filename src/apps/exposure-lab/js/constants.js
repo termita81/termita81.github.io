@@ -2,7 +2,7 @@ export const ISO      = [100, 200, 400, 800, 1600, 3200, 6400];
 export const APERTURE = [1, 1.4, 2, 2.8, 4, 5.6, 8, 11, 16, 22, 32];
 export const SHUTTER  = ['1', '1/2', '1/4', '1/8', '1/15', '1/30', '1/60', '1/125', '1/250', '1/500', '1/1000'];
 // Focal lengths in mm on a 36 × 24 mm sensor.
-export const FOCAL    = [10, 24, 42, 50, 100, 200, 300];
+export const FOCAL    = [10, 24, 35, 42, 50, 85, 100, 200, 300];
 
 // Size of the live view and scene thumbnails.
 export const W = 768, H = 512;

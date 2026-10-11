@@ -1,5 +1,5 @@
 import { createCameraAim } from "./camera-aim.js";
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js';
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
 import { W, H, SENSOR_W, SENSOR_H } from './constants.js';
 import { renderer } from './renderer.js';
 import { cloneTemplate } from './dom.js';
