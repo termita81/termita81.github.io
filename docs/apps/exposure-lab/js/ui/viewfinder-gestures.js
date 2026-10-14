@@ -1,6 +1,7 @@
 /** Looking around and choosing a focus point in the viewfinder, by pointer or keyboard. */
 import { angleOfView } from '../camera/lens.js';
 import { FOCAL, SENSOR } from '../camera/settings.js';
+import { INITIAL_STATE } from '../state/camera-state.js';
 import { $ } from './dom.js';
 import { containedBox } from './geometry.js';
 
@@ -51,6 +52,7 @@ function createViewActions({ store, getScene, clock, onViewChange }) {
     if (!scene.canLookAround) return;
     scene.resetView();
     scene.focusPoint = null;
+    store.update({ focal: INITIAL_STATE.focal });
     onViewChange();
   }
 
