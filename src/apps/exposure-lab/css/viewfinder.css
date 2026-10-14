@@ -1,0 +1,134 @@
+/* The live viewfinder and its overlays. */
+
+.viewfinder {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #000;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.viewfinder canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  object-fit: contain;
+}
+
+.viewfinder canvas.rotatable {
+  cursor: grab;
+  touch-action: none;
+}
+
+.viewfinder canvas.rotating {
+  cursor: grabbing;
+}
+
+.viewfinder canvas.rotatable:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -3px;
+}
+
+.viewfinder-hint {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 5px 8px;
+  border-radius: 5px;
+  background: #0009;
+  color: #eee;
+  font-size: 11px;
+  pointer-events: none;
+}
+
+.reset-view {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  min-height: 30px;
+  background: #161616d9;
+  font-size: 11px;
+}
+
+.viewfinder-status {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.75);
+  color: var(--accent);
+  font-family: var(--mono);
+}
+
+.viewfinder-status[data-state='ok'] {
+  color: var(--good);
+}
+
+.focus-point {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  transform: translate(-50%, -50%);
+  border: 2px solid var(--good);
+  box-shadow: 0 0 0 1px #000;
+  pointer-events: none;
+}
+
+/* ---------- Shutter blink ---------- */
+
+.shutter-blink {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.viewfinder.fired .shutter-blink {
+  animation: blink 0.3s ease-out;
+}
+
+@keyframes blink {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+/* ---------- Responsive ---------- */
+
+@media (min-width: 861px) {
+  .scenes > .viewfinder {
+    min-height: 320px;
+  }
+}
+
+@media (max-width: 860px) {
+  .viewfinder {
+    flex: none;
+    aspect-ratio: 3 / 2;
+  }
+}
+
+@media (max-width: 600px) {
+  .viewfinder-hint {
+    max-width: calc(100% - 115px);
+    font-size: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .viewfinder.fired .shutter-blink {
+    animation: none;
+  }
+}
