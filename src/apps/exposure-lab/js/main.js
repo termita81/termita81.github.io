@@ -20,7 +20,7 @@ import { createExposureMeter } from './ui/exposure-meter.js';
 import { createFocusPanel } from './ui/focus-panel.js';
 import { setupKeyboard } from './ui/keyboard.js';
 import { createLightbox } from './ui/lightbox/lightbox.js';
-import { createModeSelector } from './ui/mode-selector.js';
+import { bindModeSelector } from './ui/mode-selector.js';
 import { createPhotoRoll } from './ui/photo-roll.js';
 import { createPhoneScreen } from './ui/phone-screen.js';
 import { createSceneGallery } from './ui/scene-gallery.js';
@@ -47,9 +47,9 @@ function createCameraViews({ scenes, store, currentScene }) {
   const viewfinder = createViewfinder(VIEW_SIZE);
   const fullscreen = createViewfinderFullscreen();
   const focusPanel = createFocusPanel(store);
+  bindModeSelector(store);
   const views = [
     createSettingSliders(store),
-    createModeSelector(store),
     createExposureMeter(),
     focusPanel,
     createSceneGallery({

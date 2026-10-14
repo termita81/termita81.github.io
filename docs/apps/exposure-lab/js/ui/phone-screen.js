@@ -1,4 +1,3 @@
-import { exposureDelta } from '../camera/exposure.js';
 import { $, cloneTemplate } from './dom.js';
 import { createPhoneSettings } from './phone-settings.js';
 
@@ -96,7 +95,6 @@ export function createPhoneScreen({ store, onLayoutChange }) {
   return {
     render(state, scene) {
       $('phone-scene-name').textContent = scene.name;
-      root.dataset.limit = String(state.mode !== 'M' && exposureDelta(scene.ev, state) !== 0);
       settings.render(state, scene);
     },
     renderFocus: settings.renderFocus,

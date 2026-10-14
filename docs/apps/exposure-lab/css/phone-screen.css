@@ -149,6 +149,10 @@
   font-size: 12px;
 }
 
+.phone-meter #exposure-result {
+  inline-size: 10ch;
+}
+
 .phone-meter[data-state='ok'] .meter-val,
 .phone-meter[data-state='ok'] .meter-mark {
   color: var(--good);
@@ -170,25 +174,6 @@
 .phone-screen .exposure-modes label {
   min-height: 44px;
   padding: 10px;
-}
-
-.phone-screen #mode-name {
-  margin-top: 5px;
-  text-align: center;
-  color: var(--muted);
-  font-size: 12px;
-}
-
-.phone-screen #mode-hint {
-  display: none;
-}
-
-.phone-screen[data-limit='true'] #mode-hint {
-  display: block;
-  padding: 8px;
-  border: 1px solid var(--accent);
-  border-radius: 6px;
-  color: var(--accent);
 }
 
 .setting-buttons {

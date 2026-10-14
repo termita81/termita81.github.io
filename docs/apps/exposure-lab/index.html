@@ -128,14 +128,22 @@
               >
               <label title="Manual"><input type="radio" name="exposure-mode" value="M" /> M</label>
             </div>
-            <p id="mode-name" class="phone-only"></p>
-            <p id="mode-hint" class="focus-hint" aria-live="polite"></p>
           </fieldset>
 
           <section id="exposure-panel" class="ev" aria-labelledby="exposure-title">
             <div class="exposure-heading">
               <h3 id="exposure-title">Exposure</h3>
-              <output id="exposure-result" class="meter-val" aria-live="polite">Correct</output>
+              <button
+                id="exposure-result"
+                class="meter-val"
+                type="button"
+                aria-haspopup="dialog"
+                aria-controls="exposure-explanation"
+                aria-expanded="false"
+                aria-live="polite"
+              >
+                Correct
+              </button>
             </div>
             <div class="exposure-values">
               <div>
@@ -239,6 +247,26 @@
     </div>
 
     <p id="announce" class="sr-only" aria-live="polite"></p>
+
+    <div
+      id="exposure-explanation"
+      class="exposure-explanation"
+      popover="auto"
+      role="dialog"
+      aria-labelledby="exposure-explanation-title"
+    >
+      <div class="exposure-explanation-heading">
+        <h3 id="exposure-explanation-title">Exposure mode</h3>
+        <button
+          class="btn"
+          type="button"
+          aria-label="Close exposure explanation"
+        >
+          Close
+        </button>
+      </div>
+      <p id="exposure-explanation-text"></p>
+    </div>
 
     <dialog
       id="welcome"
