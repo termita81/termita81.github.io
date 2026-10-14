@@ -1,5 +1,11 @@
 import { exposureDelta, settingsEv } from '../camera/exposure.js';
-import { exposureState, exposureVerdict, formatEv, formatSigned } from '../camera/format.js';
+import {
+  exposureState,
+  exposureVerdict,
+  formatEv,
+  formatSettingsEvCalculation,
+  formatSigned,
+} from '../camera/format.js';
 import { $ } from './dom.js';
 
 // Stops shown either side of zero.
@@ -26,7 +32,6 @@ export function meterPosition(delta) {
 function renderReadout(state, scene, delta) {
   $('settings-ev').textContent = formatEv(settingsEv(state));
   $('scene-ev').textContent = formatEv(scene.ev);
-  $('exposure-scene').textContent = scene.name;
   const compact = document.documentElement.classList.contains('compact-camera');
   const result = $('exposure-result');
   result.textContent =
@@ -50,7 +55,10 @@ function renderReadout(state, scene, delta) {
       ? `${2 ** delta} times balanced brightness`
       : `1/${2 ** -delta} of balanced brightness`;
   $('exposure-difference').textContent =
-    `${formatEv(scene.ev)} - ${formatEv(settingsEv(state))} = ${formatSigned(delta)} stop${Math.abs(delta) === 1 ? '' : 's'}. ${delta === 0 ? 'These settings match the scene.' : `The photo is ${brightness}.`}`;
+    `${formatEv(scene.ev)} - ${formatEv(settingsEv(state))} = ${formatSigned(delta)} stop${Math.abs(delta) === 1 ? '' : 's'}.`;
+  $('exposure-calculation').textContent = formatSettingsEvCalculation(state);
+  $('exposure-outcome').textContent =
+    delta === 0 ? 'These settings match the scene.' : `The photo is ${brightness}.`;
 }
 
 function renderMark(delta) {

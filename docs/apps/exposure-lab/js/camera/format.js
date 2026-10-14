@@ -1,5 +1,6 @@
-/** Text for camera values. */
+import { APERTURE, ISO, SHUTTER } from './settings.js';
 
+/** Text for camera values. */
 const MINUS = '−';
 
 /** A number with a typographic minus sign. */
@@ -14,6 +15,15 @@ export const formatAperture = (fNumber) => `f/${fNumber}`;
 export const formatShutter = (time) => `${time} s`;
 export const formatFocal = (focal) => `${focal} mm`;
 export const formatStops = (n) => `${n} stop${n === 1 ? '' : 's'}`;
+
+/** The stop calculation for the current aperture, shutter and ISO indices. */
+export function formatSettingsEvCalculation({ aperture, shutter, iso }) {
+  return (
+    `${aperture} (${formatAperture(APERTURE[aperture])}) + ` +
+    `${shutter} (${SHUTTER[shutter]}s) - ${iso} (${formatIso(ISO[iso])}) = ` +
+    formatNumber(aperture + shutter - iso)
+  );
+}
 
 export function formatFocusDistance(distance) {
   if (distance == null) return 'N/A';

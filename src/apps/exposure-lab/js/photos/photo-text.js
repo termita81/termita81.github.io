@@ -6,8 +6,8 @@ import {
   formatFocal,
   formatFocusDistance,
   formatIso,
-  formatNumber,
   formatShutter,
+  formatSettingsEvCalculation,
   formatStops,
 } from '../camera/format.js';
 
@@ -60,8 +60,6 @@ export function exposureExplanation(photo) {
 
 /** [term, value] rows for the photo's details list. */
 export function photoDetails(photo) {
-  const { stops } = photo;
-  const sum = `${stops.aperture} + ${stops.shutter} − ${stops.iso} = ${formatNumber(photo.ev)}`;
   return [
     ['Scene brightness', formatEv(photo.sceneEv)],
     ['Mode', photo.mode],
@@ -70,6 +68,7 @@ export function photoDetails(photo) {
     ['Shutter speed', formatShutter(photo.shutter)],
     ['Focal length', formatFocal(photo.focal)],
     ['Focus', join(focusMode(photo), formatFocusDistance(photo.focusDistance))],
-    ['Settings EV', sum],
+    ['Settings EV', formatEv(photo.ev)],
+    ['Calculation', formatSettingsEvCalculation(photo.stops)],
   ];
 }
